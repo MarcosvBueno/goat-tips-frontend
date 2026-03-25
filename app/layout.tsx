@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { FloatingBot } from "@/components/layout/floating-bot";
+import { QueryProvider } from "@/providers/query-provider";
 
 const newAmsterdam = New_Amsterdam({
   weight: "400",
@@ -35,10 +36,12 @@ export default function RootLayout({
       className={`${newAmsterdam.variable} ${notoSans.variable} dark`}
     >
       <body className="min-h-screen flex flex-col">
-        <Navbar />
-        <main className="pt-[60px] flex-1">{children}</main>
-        <Footer />
-        <FloatingBot />
+        <QueryProvider>
+          <Navbar />
+          <main className="pt-[60px] flex-1">{children}</main>
+          <Footer />
+          <FloatingBot />
+        </QueryProvider>
       </body>
     </html>
   );
