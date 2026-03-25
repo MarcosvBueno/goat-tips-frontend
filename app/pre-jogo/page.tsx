@@ -1,61 +1,12 @@
-import { UpcomingCard } from "@/components/prejogo/upcoming-card";
+"use client";
 
-const UPCOMING_MATCHES = [
-  {
-    countdownNum: "2h",
-    countdownLabel: "Restam",
-    teamA: "Arsenal",
-    teamB: "Chelsea",
-    league: "Premier League",
-    stadium: "Emirates Stadium",
-    probs: [
-      { value: "67%", label: "ARS" },
-      { value: "18%", label: "EMP" },
-      { value: "15%", label: "CHE" },
-    ],
-  },
-  {
-    countdownNum: "4h",
-    countdownLabel: "Restam",
-    teamA: "Liverpool",
-    teamB: "Man City",
-    league: "Premier League",
-    stadium: "Anfield",
-    probs: [
-      { value: "52%", label: "LIV" },
-      { value: "22%", label: "EMP" },
-      { value: "26%", label: "MCI" },
-    ],
-  },
-  {
-    countdownNum: "1d",
-    countdownLabel: "Amanhã",
-    teamA: "Bayern",
-    teamB: "Dortmund",
-    league: "Bundesliga",
-    stadium: "Allianz Arena",
-    probs: [
-      { value: "61%", label: "BAY" },
-      { value: "20%", label: "EMP" },
-      { value: "19%", label: "BVB" },
-    ],
-  },
-  {
-    countdownNum: "2d",
-    countdownLabel: "Qua.",
-    teamA: "Barcelona",
-    teamB: "Real Madrid",
-    league: "La Liga",
-    stadium: "Camp Nou",
-    probs: [
-      { value: "46%", label: "BAR" },
-      { value: "22%", label: "EMP" },
-      { value: "32%", label: "RMA" },
-    ],
-  },
-];
+import { useUpcomingMatches } from "@/hooks/use-matches";
+import { UpcomingCard } from "@/components/prejogo/upcoming-card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function PreJogoPage() {
+  const { data: matches, isLoading } = useUpcomingMatches();
+
   return (
     <div className="px-6 py-6 max-w-[1280px] mx-auto animate-fade-in">
       <div
@@ -64,11 +15,35 @@ export default function PreJogoPage() {
       >
         Próximos jogos
       </div>
-      <div className="flex flex-col gap-[10px]">
-        {UPCOMING_MATCHES.map((match, i) => (
-          <UpcomingCard key={i} {...match} />
-        ))}
-      </div>
+
+      {isLoading ? (
+        <div className="flex flex-col gap-[10px]">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-[88px] w-full" />
+          ))}
+        </div>
+      ) : !matches || matches.length === 0 ? (
+        <div className="mt-16 text-center">
+          <div
+            className="text-[48px] text-(--text3) mb-2"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            📅
+          </div>
+          <div className="text-[16px] text-(--text2) font-medium">
+            Nenhum jogo agendado no momento
+          </div>
+          <div className="text-[13px] text-(--text3) mt-1">
+            Os próximos jogos aparecerão aqui assim que forem anunciados
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-[10px]">
+          {matches.map((match) => (
+            <UpcomingCard key={match.event_id} match={match} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
