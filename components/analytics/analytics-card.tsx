@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 interface StatBar {
   label: string;
   value: string;
@@ -16,6 +18,8 @@ interface AnalyticsCardProps {
   fullWidth?: boolean;
   stats?: StatBar[];
   calibrationItems?: CalibrationItem[];
+  children?: React.ReactNode;
+  className?: string;
 }
 
 const BAR_COLORS = {
@@ -31,12 +35,16 @@ export function AnalyticsCard({
   fullWidth = false,
   stats,
   calibrationItems,
+  children,
+  className,
 }: AnalyticsCardProps) {
   return (
     <div
-      className={`bg-card border border-border rounded-[14px] p-6 ${
-        fullWidth ? "md:col-span-2" : ""
-      }`}
+      className={cn(
+        "bg-card border border-border rounded-[14px] p-6",
+        fullWidth && "md:col-span-2",
+        className,
+      )}
     >
       <div className="flex items-center justify-between mb-[18px]">
         <div
@@ -77,21 +85,22 @@ export function AnalyticsCard({
       {calibrationItems && (
         <div className="grid grid-cols-2 gap-3">
           {calibrationItems.map((item, i) => (
-            <div
-              key={i}
-              className="bg-(--bg2) rounded-lg p-[14px] text-center"
-            >
+            <div key={i} className="bg-(--bg2) rounded-lg p-[14px] text-center">
               <div
                 className="text-[28px] text-[#012AFE] leading-none mb-1"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {item.num}
               </div>
-              <div className="text-[11px] text-(--text2) font-medium">{item.label}</div>
+              <div className="text-[11px] text-(--text2) font-medium">
+                {item.label}
+              </div>
             </div>
           ))}
         </div>
       )}
+
+      {children}
     </div>
   );
 }
