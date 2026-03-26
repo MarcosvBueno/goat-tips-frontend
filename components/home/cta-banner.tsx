@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 
 const STATS = [
   { label: 'Acurácia', value: '84%' },
@@ -10,69 +9,7 @@ const STATS = [
   { label: 'Mercados', value: '12+' },
 ];
 
-// Tokens para cada tema — aplicados nos inline styles
-const dark = {
-  bg: '#050D1F',
-  grid: 'rgba(1,42,254,0.07)',
-  halo: 'radial-gradient(ellipse at 65% 25%, rgba(1,42,254,0.45) 0%, transparent 62%)',
-  vignette:
-    'radial-gradient(ellipse at 20% 85%, rgba(0,0,0,0.55) 0%, transparent 68%)',
-  logoOpacity: '0.055',
-  logoFilter: 'brightness-200',
-  badgeBg: 'rgba(1,42,254,0.14)',
-  badgeBorder: '1px solid rgba(1,42,254,0.32)',
-  badgeText: '#6B8AFF',
-  heading: '#ffffff',
-  desc: 'rgba(255,255,255,0.42)',
-  statsDivider: 'rgba(255,255,255,0.07)',
-  statsValue: '#ffffff',
-  statsLabel: 'rgba(255,255,255,0.30)',
-  subtext: 'rgba(255,255,255,0.22)',
-  barBorder: 'rgba(255,255,255,0.06)',
-  barBg: 'rgba(0,0,0,0.25)',
-  barText: 'rgba(255,255,255,0.22)',
-};
-
-const light = {
-  bg: '#EEF3FF',
-  grid: 'rgba(1,42,254,0.05)',
-  halo: 'radial-gradient(ellipse at 65% 25%, rgba(1,42,254,0.14) 0%, transparent 62%)',
-  vignette:
-    'radial-gradient(ellipse at 20% 85%, rgba(1,42,254,0.06) 0%, transparent 68%)',
-  logoOpacity: '0.10',
-  logoFilter: '',
-  badgeBg: 'rgba(1,42,254,0.10)',
-  badgeBorder: '1px solid rgba(1,42,254,0.25)',
-  badgeText: '#012AFE',
-  heading: '#0A0F2E',
-  desc: 'rgba(10,15,46,0.50)',
-  statsDivider: 'rgba(0,0,0,0.08)',
-  statsValue: '#0A0F2E',
-  statsLabel: 'rgba(10,15,46,0.38)',
-  subtext: 'rgba(10,15,46,0.35)',
-  barBorder: 'rgba(0,0,0,0.07)',
-  barBg: 'rgba(0,0,0,0.04)',
-  barText: 'rgba(10,15,46,0.30)',
-};
-
 export function CtaBanner() {
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    const html = document.documentElement;
-    const current = html.classList.contains('dark');
-    if (current !== isDark) setIsDark(current);
-
-    const observer = new MutationObserver(() => {
-      setIsDark(html.classList.contains('dark'));
-    });
-    observer.observe(html, { attributes: true, attributeFilter: ['class'] });
-    return () => observer.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const t = isDark ? dark : light;
-
   return (
     <div className="px-4 md:px-6 max-w-[1280px] mx-auto my-14">
       <motion.div
@@ -81,15 +18,15 @@ export function CtaBanner() {
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         className="relative rounded-2xl overflow-hidden"
-        style={{ background: t.bg, transition: 'background 0.3s ease' }}
+        style={{ background: 'var(--cta-bg)', transition: 'background 0.3s ease' }}
       >
         {/* Grid lines */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             backgroundImage: `
-              linear-gradient(${t.grid} 1px, transparent 1px),
-              linear-gradient(90deg, ${t.grid} 1px, transparent 1px)
+              linear-gradient(var(--cta-grid) 1px, transparent 1px),
+              linear-gradient(90deg, var(--cta-grid) 1px, transparent 1px)
             `,
             backgroundSize: '52px 52px',
           }}
@@ -98,25 +35,25 @@ export function CtaBanner() {
         {/* Blue halo top-right */}
         <div
           className="absolute -top-24 -right-24 w-[640px] h-[480px] pointer-events-none"
-          style={{ background: t.halo }}
+          style={{ background: 'var(--cta-halo)' }}
         />
 
         {/* Soft vignette bottom-left */}
         <div
           className="absolute bottom-0 left-0 w-[480px] h-[320px] pointer-events-none"
-          style={{ background: t.vignette }}
+          style={{ background: 'var(--cta-vignette)' }}
         />
 
         {/* Large decorative logo — bottom right */}
         <div
           className="absolute right-[-60px] bottom-[-60px] w-[440px] h-[440px] pointer-events-none"
-          style={{ opacity: t.logoOpacity }}
+          style={{ opacity: 'var(--cta-logo-opacity)' }}
         >
           <Image
             src="/goat-tips-logo.svg"
             alt=""
             fill
-            className={`object-contain ${t.logoFilter}`}
+            className="object-contain"
           />
         </div>
 
@@ -124,14 +61,12 @@ export function CtaBanner() {
         <div className="relative z-10 grid md:grid-cols-[1fr_auto] gap-10 items-end px-8 pt-7 pb-0 md:px-14 md:pt-10">
           {/* Left column */}
           <div>
-            {/* Badge */}
-
             {/* Heading */}
             <h2
               className="text-[40px] sm:text-[54px] md:text-[66px] uppercase leading-[0.9] tracking-[0.01em] mb-4"
               style={{
                 fontFamily: 'var(--font-display)',
-                color: t.heading,
+                color: 'var(--cta-heading)',
               }}
             >
               Crie a
@@ -145,9 +80,8 @@ export function CtaBanner() {
                 <span
                   className="absolute left-0 -bottom-1 w-full h-[2px] rounded-full"
                   style={{
-                    background:
-                      'linear-gradient(90deg, #012AFE 0%, transparent 100%)',
-                    opacity: isDark ? 0.6 : 0.4,
+                    background: 'linear-gradient(90deg, #012AFE 0%, transparent 100%)',
+                    opacity: 'var(--cta-underline-opacity)',
                   }}
                 />
               </span>
@@ -155,7 +89,7 @@ export function CtaBanner() {
 
             <p
               className="text-[14px] max-w-[360px] leading-[1.7]"
-              style={{ color: t.desc }}
+              style={{ color: 'var(--cta-desc)' }}
             >
               Combine mercados, escolha seus eventos e monte uma odd
               personalizada com análise de IA calibrada em dados históricos e
@@ -165,7 +99,7 @@ export function CtaBanner() {
             {/* Stats row */}
             <div
               className="flex items-center gap-8 mt-5 pt-5"
-              style={{ borderTop: `1px solid ${t.statsDivider}` }}
+              style={{ borderTop: '1px solid var(--cta-divider)' }}
             >
               {STATS.map(s => (
                 <div key={s.label} className="flex flex-col gap-0.5">
@@ -173,14 +107,14 @@ export function CtaBanner() {
                     className="text-[30px] leading-none"
                     style={{
                       fontFamily: 'var(--font-display)',
-                      color: t.statsValue,
+                      color: 'var(--cta-stats-value)',
                     }}
                   >
                     {s.value}
                   </span>
                   <span
                     className="text-[10px] tracking-[0.06em] uppercase"
-                    style={{ color: t.statsLabel }}
+                    style={{ color: 'var(--cta-stats-label)' }}
                   >
                     {s.label}
                   </span>
@@ -232,7 +166,7 @@ export function CtaBanner() {
 
             <p
               className="text-[11px] tracking-[0.04em]"
-              style={{ color: t.subtext }}
+              style={{ color: 'var(--cta-subtext)' }}
             >
               Sem cadastro · Análise gratuita
             </p>
@@ -243,14 +177,14 @@ export function CtaBanner() {
         <div
           className="relative z-10 flex items-center gap-3 px-8 md:px-14 py-2.5 mt-4"
           style={{
-            borderTop: `1px solid ${t.barBorder}`,
-            background: t.barBg,
+            borderTop: '1px solid var(--cta-bar-border)',
+            background: 'var(--cta-bar-bg)',
           }}
         >
           <span className="w-1.5 h-1.5 rounded-full bg-[#012AFE] shrink-0 animate-pulse-red" />
           <span
             className="text-[10px] tracking-widest uppercase"
-            style={{ color: t.barText }}
+            style={{ color: 'var(--cta-bar-text)' }}
           >
             MODELO xG · STATSBOMB · FBREF · ODDS AO VIVO
           </span>

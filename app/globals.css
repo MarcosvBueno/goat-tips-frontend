@@ -49,6 +49,23 @@
 }
 
 :root {
+  /* ── CTA Banner tokens ──────────────────────────────────────── */
+  --cta-bg: #EEF3FF;
+  --cta-grid: rgba(1, 42, 254, 0.05);
+  --cta-halo: radial-gradient(ellipse at 65% 25%, rgba(1, 42, 254, 0.14) 0%, transparent 62%);
+  --cta-vignette: radial-gradient(ellipse at 20% 85%, rgba(1, 42, 254, 0.06) 0%, transparent 68%);
+  --cta-logo-opacity: 0.10;
+  --cta-heading: #0A0F2E;
+  --cta-desc: rgba(10, 15, 46, 0.50);
+  --cta-divider: rgba(0, 0, 0, 0.08);
+  --cta-stats-value: #0A0F2E;
+  --cta-stats-label: rgba(10, 15, 46, 0.38);
+  --cta-subtext: rgba(10, 15, 46, 0.35);
+  --cta-bar-border: rgba(0, 0, 0, 0.07);
+  --cta-bar-bg: rgba(0, 0, 0, 0.04);
+  --cta-bar-text: rgba(10, 15, 46, 0.30);
+  --cta-underline-opacity: 0.4;
+
   --blue: #012AFE;
   --blue-dim: rgba(1, 42, 254, 0.12);
   --blue-mid: rgba(1, 42, 254, 0.3);
@@ -103,6 +120,23 @@
 }
 
 .dark {
+  /* ── CTA Banner tokens ──────────────────────────────────────── */
+  --cta-bg: #050D1F;
+  --cta-grid: rgba(1, 42, 254, 0.07);
+  --cta-halo: radial-gradient(ellipse at 65% 25%, rgba(1, 42, 254, 0.45) 0%, transparent 62%);
+  --cta-vignette: radial-gradient(ellipse at 20% 85%, rgba(0, 0, 0, 0.55) 0%, transparent 68%);
+  --cta-logo-opacity: 0.055;
+  --cta-heading: #ffffff;
+  --cta-desc: rgba(255, 255, 255, 0.42);
+  --cta-divider: rgba(255, 255, 255, 0.07);
+  --cta-stats-value: #ffffff;
+  --cta-stats-label: rgba(255, 255, 255, 0.30);
+  --cta-subtext: rgba(255, 255, 255, 0.22);
+  --cta-bar-border: rgba(255, 255, 255, 0.06);
+  --cta-bar-bg: rgba(0, 0, 0, 0.25);
+  --cta-bar-text: rgba(255, 255, 255, 0.22);
+  --cta-underline-opacity: 0.6;
+
   --bg: #131313;
   --bg2: #1c1c1c;
   --bg3: #242424;

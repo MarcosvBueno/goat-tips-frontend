@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import Image from "next/image";
 
 const NAV_LINKS = [
@@ -13,27 +12,12 @@ const NAV_LINKS = [
   { href: "/tipster", label: "Tipster IA", id: "tipster" },
 ];
 
+function toggleTheme() {
+  document.documentElement.classList.toggle("dark");
+}
+
 export function Navbar() {
   const pathname = usePathname();
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    const html = document.documentElement;
-    const dark = html.classList.contains("dark");
-    if (dark !== isDark) setIsDark(dark);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  function toggleTheme() {
-    const html = document.documentElement;
-    if (html.classList.contains("dark")) {
-      html.classList.remove("dark");
-      setIsDark(false);
-    } else {
-      html.classList.add("dark");
-      setIsDark(true);
-    }
-  }
 
   return (
     <>
@@ -90,19 +74,19 @@ export function Navbar() {
             title="Alternar tema"
             className="w-9 h-9 rounded-lg border border-(--border2) bg-(--pill-bg) flex items-center justify-center cursor-pointer text-(--text2) hover:bg-(--bg3) hover:text-(--text) transition-all duration-200 shrink-0"
           >
-            {isDark ? (
+            {/* Ícone sol — visível no modo escuro */}
+            <span className="hidden dark:block">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path
-                  d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 12.5A5.5 5.5 0 118 2.5a5.5 5.5 0 010 11z"
-                  opacity="0.3"
-                />
+                <path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 12.5A5.5 5.5 0 118 2.5a5.5 5.5 0 010 11z" opacity="0.3" />
                 <path d="M8 3a5 5 0 000 10V3z" />
               </svg>
-            ) : (
+            </span>
+            {/* Ícone lua — visível no modo claro */}
+            <span className="block dark:hidden">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                 <path d="M8 2a6 6 0 100 12A6 6 0 008 2zm0 1a5 5 0 010 10V3z" />
               </svg>
-            )}
+            </span>
           </button>
           <button
             className="text-[13px] font-semibold bg-[#012AFE] text-white border-none px-[18px] py-[8px] rounded-lg cursor-pointer tracking-[0.02em] hover:opacity-[0.88] hover:-translate-y-px transition-all duration-200 whitespace-nowrap"
