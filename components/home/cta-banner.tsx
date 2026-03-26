@@ -17,16 +17,25 @@ export function CtaBanner() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        className="relative rounded-2xl overflow-hidden"
-        style={{ background: 'var(--cta-bg)', transition: 'background 0.3s ease' }}
+        className="relative rounded-2xl overflow-hidden bg-white dark:bg-[#050D1F] transition-colors duration-300 border border-black/5 dark:border-white/5 shadow-xs"
       >
         {/* Grid lines */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none dark:hidden"
           style={{
             backgroundImage: `
-              linear-gradient(var(--cta-grid) 1px, transparent 1px),
-              linear-gradient(90deg, var(--cta-grid) 1px, transparent 1px)
+              linear-gradient(rgba(1, 42, 254, 0.04) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(1, 42, 254, 0.04) 1px, transparent 1px)
+            `,
+            backgroundSize: '52px 52px',
+          }}
+        />
+        <div
+          className="absolute inset-0 pointer-events-none hidden dark:block"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(1, 42, 254, 0.07) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(1, 42, 254, 0.07) 1px, transparent 1px)
             `,
             backgroundSize: '52px 52px',
           }}
@@ -34,21 +43,26 @@ export function CtaBanner() {
 
         {/* Blue halo top-right */}
         <div
-          className="absolute -top-24 -right-24 w-[640px] h-[480px] pointer-events-none"
-          style={{ background: 'var(--cta-halo)' }}
+          className="absolute -top-24 -right-24 w-[640px] h-[480px] pointer-events-none dark:hidden"
+          style={{ background: 'radial-gradient(ellipse at 65% 25%, rgba(1, 42, 254, 0.08) 0%, transparent 62%)' }}
+        />
+        <div
+          className="absolute -top-24 -right-24 w-[640px] h-[480px] pointer-events-none hidden dark:block"
+          style={{ background: 'radial-gradient(ellipse at 65% 25%, rgba(1, 42, 254, 0.45) 0%, transparent 62%)' }}
         />
 
         {/* Soft vignette bottom-left */}
         <div
-          className="absolute bottom-0 left-0 w-[480px] h-[320px] pointer-events-none"
-          style={{ background: 'var(--cta-vignette)' }}
+          className="absolute bottom-0 left-0 w-[480px] h-[320px] pointer-events-none dark:hidden"
+          style={{ background: 'radial-gradient(ellipse at 20% 85%, rgba(0, 0, 0, 0.02) 0%, transparent 68%)' }}
+        />
+        <div
+          className="absolute bottom-0 left-0 w-[480px] h-[320px] pointer-events-none hidden dark:block"
+          style={{ background: 'radial-gradient(ellipse at 20% 85%, rgba(0, 0, 0, 0.55) 0%, transparent 68%)' }}
         />
 
         {/* Large decorative logo — bottom right */}
-        <div
-          className="absolute right-[-60px] bottom-[-60px] w-[440px] h-[440px] pointer-events-none"
-          style={{ opacity: 'var(--cta-logo-opacity)' }}
-        >
+        <div className="absolute right-[-60px] bottom-[-60px] w-[440px] h-[440px] pointer-events-none opacity-[0.08] dark:opacity-[0.055]">
           <Image
             src="/goat-tips-logo.svg"
             alt=""
@@ -63,59 +77,35 @@ export function CtaBanner() {
           <div>
             {/* Heading */}
             <h2
-              className="text-[40px] sm:text-[54px] md:text-[66px] uppercase leading-[0.9] tracking-[0.01em] mb-4"
-              style={{
-                fontFamily: 'var(--font-display)',
-                color: 'var(--cta-heading)',
-              }}
+              className="text-[40px] sm:text-[54px] md:text-[66px] uppercase leading-[0.9] tracking-[0.01em] mb-4 text-[#0A0F2E] dark:text-white"
+              style={{ fontFamily: 'var(--font-display)' }}
             >
               Crie a
               <br />
               odd{' '}
-              <span
-                className="relative inline-block"
-                style={{ color: '#012AFE' }}
-              >
+              <span className="relative inline-block text-[#012AFE]">
                 perfeita.
-                <span
-                  className="absolute left-0 -bottom-1 w-full h-[2px] rounded-full"
-                  style={{
-                    background: 'linear-gradient(90deg, #012AFE 0%, transparent 100%)',
-                    opacity: 'var(--cta-underline-opacity)',
-                  }}
-                />
+                <span className="absolute left-0 -bottom-1 w-full h-[2px] rounded-full bg-gradient-to-r from-[#012AFE] to-transparent opacity-40 dark:opacity-60" />
               </span>
             </h2>
 
-            <p
-              className="text-[14px] max-w-[360px] leading-[1.7]"
-              style={{ color: 'var(--cta-desc)' }}
-            >
+            <p className="text-[14px] max-w-[360px] leading-[1.7] text-[#0A0F2E]/60 dark:text-white/40">
               Combine mercados, escolha seus eventos e monte uma odd
               personalizada com análise de IA calibrada em dados históricos e
               modelo xG em tempo real.
             </p>
 
             {/* Stats row */}
-            <div
-              className="flex items-center gap-8 mt-5 pt-5"
-              style={{ borderTop: '1px solid var(--cta-divider)' }}
-            >
+            <div className="flex items-center gap-8 mt-5 pt-5 border-t border-black/5 dark:border-white/5">
               {STATS.map(s => (
                 <div key={s.label} className="flex flex-col gap-0.5">
                   <span
-                    className="text-[30px] leading-none"
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      color: 'var(--cta-stats-value)',
-                    }}
+                    className="text-[30px] leading-none text-[#0A0F2E] dark:text-white"
+                    style={{ fontFamily: 'var(--font-display)' }}
                   >
                     {s.value}
                   </span>
-                  <span
-                    className="text-[10px] tracking-[0.06em] uppercase"
-                    style={{ color: 'var(--cta-stats-label)' }}
-                  >
+                  <span className="text-[10px] tracking-[0.06em] uppercase text-[#0A0F2E]/40 dark:text-white/30">
                     {s.label}
                   </span>
                 </div>
@@ -126,23 +116,11 @@ export function CtaBanner() {
           {/* Right column — CTA */}
           <div className="flex flex-col items-start md:items-end gap-3 pb-7 md:pb-10 shrink-0">
             <button
-              className="group relative overflow-hidden px-8 py-[14px] rounded-xl bg-[#012AFE] text-white font-bold tracking-[0.04em] transition-all duration-300 hover:scale-[1.03]"
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '14px',
-                boxShadow: '0 0 0 0 rgba(1,42,254,0)',
-              }}
-              onMouseEnter={e =>
-                ((e.currentTarget as HTMLButtonElement).style.boxShadow =
-                  '0 0 48px rgba(1,42,254,0.55)')
-              }
-              onMouseLeave={e =>
-                ((e.currentTarget as HTMLButtonElement).style.boxShadow =
-                  '0 0 0 0 rgba(1,42,254,0)')
-              }
+              className="group relative overflow-hidden px-8 py-[14px] rounded-xl bg-[#012AFE] text-white font-bold tracking-[0.04em] transition-all duration-300 hover:scale-[1.03] shadow-none hover:shadow-[0_0_48px_rgba(1,42,254,0.55)]"
+              style={{ fontFamily: 'var(--font-body)', fontSize: '14px' }}
             >
               {/* Shimmer */}
-              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-linear-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
+              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
 
               <span className="relative z-10 flex items-center gap-2.5">
                 Montar agora
@@ -164,28 +142,16 @@ export function CtaBanner() {
               </span>
             </button>
 
-            <p
-              className="text-[11px] tracking-[0.04em]"
-              style={{ color: 'var(--cta-subtext)' }}
-            >
+            <p className="text-[11px] tracking-[0.04em] text-[#0A0F2E]/40 dark:text-white/20">
               Sem cadastro · Análise gratuita
             </p>
           </div>
         </div>
 
         {/* ── Bottom data bar ─────────────────────────────────────── */}
-        <div
-          className="relative z-10 flex items-center gap-3 px-8 md:px-14 py-2.5 mt-4"
-          style={{
-            borderTop: '1px solid var(--cta-bar-border)',
-            background: 'var(--cta-bar-bg)',
-          }}
-        >
+        <div className="relative z-10 flex items-center gap-3 px-8 md:px-14 py-2.5 mt-4 border-t border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-black/25">
           <span className="w-1.5 h-1.5 rounded-full bg-[#012AFE] shrink-0 animate-pulse-red" />
-          <span
-            className="text-[10px] tracking-widest uppercase"
-            style={{ color: 'var(--cta-bar-text)' }}
-          >
+          <span className="text-[10px] tracking-widest uppercase text-[#0A0F2E]/40 dark:text-white/20">
             MODELO xG · STATSBOMB · FBREF · ODDS AO VIVO
           </span>
         </div>

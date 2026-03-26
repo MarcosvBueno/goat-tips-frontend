@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { href: "/", label: "Home", id: "home" },
   { href: "/ao-vivo", label: "Ao vivo", id: "live", live: true },
   { href: "/pre-jogo", label: "Pré-jogo", id: "prejogo" },
+  { href: "/simulador", label: "Simulador", id: "simulador" },
   { href: "/analytics", label: "Analytics", id: "analytics" },
   { href: "/tipster", label: "Tipster IA", id: "tipster" },
 ];
