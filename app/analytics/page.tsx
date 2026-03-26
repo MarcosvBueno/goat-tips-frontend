@@ -11,12 +11,14 @@ import {
   useGoalPatterns,
   useCardPatterns,
   useCalibration,
+  useAnalyticsH2H,
 } from "@/hooks/use-analytics";
 import { AnalyticsCard } from "@/components/analytics/analytics-card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AnalyticsPage() {
   const [selectedTeam, setSelectedTeam] = useState<string | undefined>();
+  const [selectedTeam2, setSelectedTeam2] = useState<string | undefined>();
   const [selectedReferee, setSelectedReferee] = useState<string | undefined>();
 
   const { data: teamsData } = useTeams();
@@ -25,6 +27,8 @@ export default function AnalyticsPage() {
     useTeamProfile(selectedTeam);
   const { data: teamStats } = useTeamStats(selectedTeam);
   const { data: teamForm } = useTeamForm(selectedTeam, 10);
+  const { data: h2hData, isLoading: isLoadingH2H } = useAnalyticsH2H(selectedTeam, selectedTeam2, 10);
+
   const { data: refereeStats, isLoading: isLoadingReferee } =
     useRefereeStats(selectedReferee);
   const { data: goalPatterns } = useGoalPatterns();
@@ -48,7 +52,21 @@ export default function AnalyticsPage() {
           className="bg-(--bg3) border border-border rounded-lg px-4 py-2.5 text-[13px] text-(--text) outline-none focus:border-(--blue-mid) transition-colors"
           style={{ fontFamily: "var(--font-body)" }}
         >
-          <option value="">Selecione um time</option>
+          <option value="">Selecione um time (Casa)</option>
+          {teamsData?.teams.map((t) => (
+            <option key={t.id} value={t.name}>
+              {t.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={selectedTeam2 ?? ""}
+          onChange={(e) => setSelectedTeam2(e.target.value || undefined)}
+          className="bg-(--bg3) border border-border rounded-lg px-4 py-2.5 text-[13px] text-(--text) outline-none focus:border-(--blue-mid) transition-colors"
+          style={{ fontFamily: "var(--font-body)" }}
+        >
+          <option value="">Selecione outro time (Fora - H2H)</option>
           {teamsData?.teams.map((t) => (
             <option key={t.id} value={t.name}>
               {t.name}
@@ -143,6 +161,37 @@ export default function AnalyticsPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </AnalyticsCard>
+          ) : null
+        )}
+
+        {/* H2H Personalizado */}
+        {selectedTeam && selectedTeam2 && (
+          isLoadingH2H ? (
+            <Skeleton className="h-[300px]" />
+          ) : h2hData ? (
+            <AnalyticsCard
+              title={`H2H: ${selectedTeam} vs ${selectedTeam2}`}
+              badge={`${h2hData.total_matches} confrontos`}
+            >
+              <div className="flex flex-col gap-4">
+                <div className="flex justify-between items-center text-[13px] text-(--text)">
+                  <span>Vitórias Casa: <strong className="text-[#012AFE]">{h2hData.home_wins}</strong></span>
+                  <span>Empates: <strong>{h2hData.draws}</strong></span>
+                  <span>Vitórias Fora: <strong className="text-[#FF3B3B]">{h2hData.away_wins}</strong></span>
+                </div>
+                
+                <div className="bg-(--bg3) rounded-md h-2 flex overflow-hidden">
+                  <div style={{ width: `${(h2hData.home_wins / h2hData.total_matches) * 100}%`, backgroundColor: '#012AFE' }} />
+                  <div style={{ width: `${(h2hData.draws / h2hData.total_matches) * 100}%`, backgroundColor: 'var(--text3)' }} />
+                  <div style={{ width: `${(h2hData.away_wins / h2hData.total_matches) * 100}%`, backgroundColor: '#FF3B3B' }} />
+                </div>
+                
+                <div className="mt-2 text-[12px] text-(--text2)">
+                  <p>Média de gols casa: <strong className="text-(--text)">{h2hData.home_goals_avg.toFixed(2)}</strong></p>
+                  <p>Média de gols fora: <strong className="text-(--text)">{h2hData.away_goals_avg.toFixed(2)}</strong></p>
+                </div>
               </div>
             </AnalyticsCard>
           ) : null

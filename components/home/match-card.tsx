@@ -29,54 +29,74 @@ export function MatchCard({ match }: MatchCardProps) {
       });
 
   return (
-    <Link href={`/partida/${match.event_id}`} className="no-underline">
-      <div className="bg-card border border-border rounded-[14px] p-5 cursor-pointer hover:border-(--border2) hover:-translate-y-0.5 transition-all duration-200 flex flex-col gap-4 h-full">
-        <div className="flex items-center justify-between">
-          <div className="text-[11px] font-semibold text-(--text2) uppercase tracking-[0.08em] flex items-center gap-1.5">
+    <Link href={`/partida/${match.event_id}`} className="no-underline block group h-full">
+      <div className="relative bg-[#0d0d0d] overflow-hidden border border-white/5 rounded-2xl p-5 hover:border-white/10 transition-all duration-500 hover:scale-[1.02] h-full shadow-2xl flex flex-col">
+        
+        {/* Glow Effects de fundo (Premium Blur) */}
+        <div className="absolute -top-10 -left-10 w-24 h-24 bg-[#012AFE]/20 rounded-full blur-[40px] pointer-events-none" />
+        <div className="absolute -bottom-10 -right-10 w-24 h-24 bg-[#FF3B3B]/10 rounded-full blur-[40px] pointer-events-none" />
+
+        {/* Marca d'água no fundo do card */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.02] pointer-events-none select-none">
+          <span 
+             className="text-[140px] leading-none font-bold tracking-tighter" 
+             style={{ fontFamily: 'var(--font-display)' }}
+          >
+            {isLive ? `${match.score_home}-${match.score_away}` : "VS"}
+          </span>
+        </div>
+
+        <div className="relative z-10 flex items-center justify-between mb-6">
+          <div className="text-[10px] font-bold text-white/50 uppercase tracking-[0.1em] flex items-center gap-1.5">
             {isLive && (
-              <span className="inline-block w-[6px] h-[6px] rounded-full bg-[#FF3B3B] animate-pulse-red" />
+              <span className="inline-block w-[6px] h-[6px] rounded-full bg-[#FF3B3B] animate-pulse shadow-[0_0_8px_#FF3B3B]" />
             )}
-            Premier League
+            {match.round || "Premier League"}
           </div>
-          <div className="text-[12px] text-(--text3) bg-(--pill-bg) px-2 py-[3px] rounded-[20px]">
+          <div className="text-[11px] font-semibold text-white/70 bg-white/5 px-2.5 py-[4px] rounded-full border border-white/5 backdrop-blur-sm">
             {isLive ? `🔴 ${timeLabel}` : timeLabel}
           </div>
         </div>
 
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex flex-col items-center gap-2 flex-1">
-            {match.home.image_url ? (
-              <Image
-                src={match.home.image_url}
-                alt={match.home.name}
-                width={44}
-                height={44}
-                className="rounded-full object-contain"
-              />
-            ) : (
-              <div
-                className="w-11 h-11 rounded-full flex items-center justify-center text-[14px] uppercase border-[1.5px] border-(--border2) bg-(--bg3)"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {match.home.name.slice(0, 3).toUpperCase()}
-              </div>
-            )}
-            <div className="text-[13px] font-semibold text-(--text) text-center">
+        <div className="relative z-10 flex items-center justify-between gap-2 mb-6">
+          {/* Home Team */}
+          <div className="flex flex-col items-center gap-3 flex-1 group-hover:-translate-y-1 transition-transform duration-500">
+            <div className="relative">
+              <div className="absolute inset-0 bg-[#012AFE]/20 blur-xl rounded-full" />
+              {match.home.image_url ? (
+                <Image
+                  src={match.home.image_url}
+                  alt={match.home.name}
+                  width={56}
+                  height={56}
+                  className="rounded-full object-contain relative z-10 drop-shadow-2xl"
+                />
+              ) : (
+                <div
+                  className="w-14 h-14 rounded-full flex items-center justify-center text-[16px] uppercase border border-white/10 bg-black/50 backdrop-blur-md relative z-10 text-white shadow-xl"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {match.home.name.slice(0, 3).toUpperCase()}
+                </div>
+              )}
+            </div>
+            <div className="text-[13px] font-bold text-white/90 text-center leading-tight truncate w-full px-1">
               {match.home.name}
             </div>
           </div>
 
-          <div className="shrink-0 text-center">
+          {/* Score / VS Center */}
+          <div className="shrink-0 text-center relative pointer-events-none drop-shadow-2xl">
             {isLive ? (
               <div
-                className="text-[28px] text-(--text) tracking-[-0.02em]"
+                className="text-[36px] text-white tracking-[-0.03em] font-medium"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                {match.score_home} — {match.score_away}
+                {match.score_home} - {match.score_away}
               </div>
             ) : (
               <div
-                className="text-[22px] text-(--text3) tracking-[0.02em]"
+                className="text-[28px] text-white/20 tracking-[0.02em] font-medium"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 VS
@@ -84,70 +104,84 @@ export function MatchCard({ match }: MatchCardProps) {
             )}
           </div>
 
-          <div className="flex flex-col items-center gap-2 flex-1">
-            {match.away.image_url ? (
-              <Image
-                src={match.away.image_url}
-                alt={match.away.name}
-                width={44}
-                height={44}
-                className="rounded-full object-contain"
-              />
-            ) : (
-              <div
-                className="w-11 h-11 rounded-full flex items-center justify-center text-[14px] uppercase border-[1.5px] border-(--border2) bg-(--bg3)"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {match.away.name.slice(0, 3).toUpperCase()}
-              </div>
-            )}
-            <div className="text-[13px] font-semibold text-(--text) text-center">
+          {/* Away Team */}
+          <div className="flex flex-col items-center gap-3 flex-1 group-hover:-translate-y-1 transition-transform duration-500">
+             <div className="relative">
+              <div className="absolute inset-0 bg-[#FF3B3B]/20 blur-xl rounded-full" />
+              {match.away.image_url ? (
+                <Image
+                  src={match.away.image_url}
+                  alt={match.away.name}
+                  width={56}
+                  height={56}
+                  className="rounded-full object-contain relative z-10 drop-shadow-2xl"
+                />
+              ) : (
+                <div
+                  className="w-14 h-14 rounded-full flex items-center justify-center text-[16px] uppercase border border-white/10 bg-black/50 backdrop-blur-md relative z-10 text-white shadow-xl"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {match.away.name.slice(0, 3).toUpperCase()}
+                </div>
+              )}
+            </div>
+            <div className="text-[13px] font-bold text-white/90 text-center leading-tight truncate w-full px-1">
               {match.away.name}
             </div>
           </div>
         </div>
 
+        {/* Probability Bar Segmented */}
         {probA !== null && probDraw !== null && probB !== null && (
-          <div>
-            <div className="bg-(--bg3) rounded-[30px] h-1.5 overflow-hidden">
+          <div className="mb-5 relative z-10 mt-auto">
+            <div className="flex w-full h-[6px] rounded-full overflow-hidden bg-white/5 border border-white/5">
               <div
-                className="h-full rounded-[30px] transition-all duration-500"
-                style={{ width: `${probA}%`, background: "#012AFE" }}
+                className="h-full transition-all duration-1000 ease-out flex items-center justify-end pr-1"
+                style={{ width: `${probA}%`, background: 'linear-gradient(90deg, #012AFE 0%, #3B5FFF 100%)' }}
+              />
+               <div
+                className="h-full transition-all duration-1000 ease-out bg-white/20"
+                style={{ width: `${probDraw}%` }}
+              />
+              <div
+                className="h-full transition-all duration-1000 ease-out"
+                style={{ width: `${probB}%`, background: 'linear-gradient(90deg, #FF3B3B 0%, #FF5A5A 100%)' }}
               />
             </div>
-            <div className="flex justify-between mt-1.5">
-              <span className="text-[11px] text-(--text2)">
-                {match.home.name}{" "}
-                <span className="text-(--text) font-semibold">{probA}%</span>
+            <div className="flex justify-between mt-2 px-0.5">
+              <span className="text-[10px] text-white/50 uppercase tracking-widest font-semibold">
+                <span className="text-white/90">{probA}%</span> H
               </span>
-              <span className="text-[11px] text-(--text2)">
-                Empate{" "}
-                <span className="text-(--text) font-semibold">{probDraw}%</span>
+              <span className="text-[10px] text-white/50 uppercase tracking-widest font-semibold">
+                D <span className="text-white/90">{probDraw}%</span>
               </span>
-              <span className="text-[11px] text-(--text2)">
-                {match.away.name}{" "}
-                <span className="text-(--text) font-semibold">{probB}%</span>
+              <span className="text-[10px] text-white/50 uppercase tracking-widest font-semibold">
+                A <span className="text-white/90">{probB}%</span>
               </span>
             </div>
           </div>
         )}
 
+        {/* Bet Slip Styled Odds */}
         {match.odds && (
-          <div className="flex gap-2">
+          <div className="flex gap-2 relative z-10 mt-auto pt-2">
             {[
-              { label: match.home.name, value: match.odds.home_win },
-              { label: "Empate", value: match.odds.draw },
-              { label: match.away.name, value: match.odds.away_win },
-            ].map((odd) => (
+              { label: "1", value: match.odds.home_win, active: probA && probA > 45 },
+              { label: "X", value: match.odds.draw },
+              { label: "2", value: match.odds.away_win, active: probB && probB > 45 },
+            ].map((odd, idx) => (
               <div
-                key={odd.label}
-                className="flex-1 bg-(--pill-bg) border border-border rounded-lg py-2 px-1.5 text-center"
+                key={idx}
+                className={`flex-1 flex items-center justify-between px-3 py-2.5 rounded-xl border backdrop-blur-md transition-colors 
+                  ${odd.active 
+                    ? 'border-[#012AFE]/30 bg-[#012AFE]/5' 
+                    : 'border-white/5 bg-white/5 hover:bg-white/10'}`}
               >
-                <span className="text-[10px] text-(--text2) block mb-[3px] font-medium">
+                <span className={`text-[11px] font-bold ${odd.active ? 'text-[#012AFE]' : 'text-white/40'}`}>
                   {odd.label}
                 </span>
                 <span
-                  className="text-[17px] text-(--text)"
+                  className={`text-[15px] font-medium ${odd.active ? 'text-white' : 'text-white/80'}`}
                   style={{ fontFamily: "var(--font-display)" }}
                 >
                   {odd.value.toFixed(2)}

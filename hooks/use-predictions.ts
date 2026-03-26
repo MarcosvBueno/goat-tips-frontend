@@ -5,8 +5,11 @@ import {
   getFullAnalysis,
   askQuestion,
   deleteHistory,
+  getPrediction,
+  getInplayPrediction,
+  getNarrative,
 } from "@/services/predictions";
-import type { NarrativeResponse } from "@/types/api";
+import type { NarrativeResponse, Prediction } from "@/types/api";
 
 export function usePredictionById(eventId: string | undefined) {
   return useQuery({
@@ -57,5 +60,30 @@ export function useDeleteHistory() {
     { eventId: string; sessionId: string }
   >({
     mutationFn: ({ eventId, sessionId }) => deleteHistory(eventId, sessionId),
+  });
+}
+
+// ── Custom Simulator Hooks ───────────────────────────────────────────────────
+
+export function useSimulatorPrediction() {
+  return useMutation<Prediction, Error, Parameters<typeof getPrediction>[0]>({
+    mutationFn: (params) => getPrediction(params),
+  });
+}
+
+export function useSimulatorInplay() {
+  return useMutation<Prediction, Error, Parameters<typeof getInplayPrediction>[0]>({
+    mutationFn: (params) => getInplayPrediction(params),
+  });
+}
+
+// ── Custom Narrative Hook ────────────────────────────────────────────────────
+
+export function useNarrative(eventId: string | undefined) {
+  return useQuery<NarrativeResponse>({
+    queryKey: ["predictions", eventId, "narrative"],
+    queryFn: () => getNarrative(eventId!),
+    enabled: false,
+    staleTime: Infinity, // keep once requested
   });
 }

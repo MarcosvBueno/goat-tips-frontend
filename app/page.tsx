@@ -2,6 +2,7 @@ import { Hero } from "@/components/home/hero";
 import { TickerBand } from "@/components/home/ticker-band";
 import { CtaBanner } from "@/components/home/cta-banner";
 import { HomeMatches } from "@/components/home/home-matches";
+import { TopPicks } from "@/components/home/top-picks";
 
 export default function HomePage() {
   return (
@@ -9,7 +10,10 @@ export default function HomePage() {
       <Hero />
       <TickerBand />
       <CtaBanner />
-      <HomeMatches />
+      <div className="max-w-[1280px] mx-auto px-4 md:px-8 space-y-12 pb-12">
+        <TopPicks />
+        <HomeMatches />
+      </div>
     </div>
   );
 }

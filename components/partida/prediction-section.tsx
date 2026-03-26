@@ -87,6 +87,43 @@ export function PredictionSection({ prediction }: PredictionSectionProps) {
         ))}
       </div>
 
+      {/* Half-Time Prediction */}
+      {prediction.half_time && (
+        <div className="mb-4">
+          <div className="text-[11px] text-(--text3) uppercase font-semibold mb-2">
+            Previsão 1º Tempo (HT)
+          </div>
+          <div className="bg-(--bg2) border border-border rounded-lg p-3">
+            <div className="flex justify-between items-center mb-3">
+              <div className="text-[12px] text-(--text2)">
+                <span className="text-[#012AFE]">H</span>: {(prediction.half_time.home_win_prob * 100).toFixed(0)}%
+              </div>
+              <div className="text-[12px] text-(--text2)">
+                D: {(prediction.half_time.draw_prob * 100).toFixed(0)}%
+              </div>
+              <div className="text-[12px] text-(--text2)">
+                <span className="text-[#FF3B3B]">A</span>: {(prediction.half_time.away_win_prob * 100).toFixed(0)}%
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-3 gap-2">
+              <div className="bg-card rounded p-2 text-center border border-border">
+                <div className="text-[10px] text-(--text3)">Over 0.5 HT</div>
+                <div className="text-[14px] text-(--text) font-bold">{(prediction.half_time.over_0_5_prob * 100).toFixed(0)}%</div>
+              </div>
+              <div className="bg-card rounded p-2 text-center border border-border">
+                <div className="text-[10px] text-(--text3)">Over 1.5 HT</div>
+                <div className="text-[14px] text-(--text) font-bold">{(prediction.half_time.over_1_5_prob * 100).toFixed(0)}%</div>
+              </div>
+              <div className="bg-card rounded p-2 text-center border border-border">
+                <div className="text-[10px] text-(--text3)">Placar HT</div>
+                <div className="text-[14px] text-(--text) font-bold">{prediction.half_time.most_likely_score}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Score Matrix Heatmap */}
       {prediction.score_matrix && prediction.score_matrix.length > 0 && (
         <div>

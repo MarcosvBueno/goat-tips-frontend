@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${newAmsterdam.variable} ${notoSans.variable} dark`}
+      className={`${newAmsterdam.variable} ${notoSans.variable}`}
     >
       <body className="min-h-screen flex flex-col">
         <QueryProvider>

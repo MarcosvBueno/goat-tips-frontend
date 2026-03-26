@@ -18,6 +18,7 @@ import { PredictionSection } from "@/components/partida/prediction-section";
 import { WeatherCard } from "@/components/partida/weather-card";
 import { FormBadge } from "@/components/partida/form-badge";
 import { FullAnalysisCard } from "@/components/partida/full-analysis-card";
+import { NarrativeCard } from "@/components/partida/narrative-card";
 import { MatchChat } from "@/components/partida/match-chat";
 import { CardSkeleton, Skeleton } from "@/components/ui/skeleton";
 import { useRiskScores } from "@/hooks/use-analytics";
@@ -184,6 +185,11 @@ export default function PartidaPage({
             <LineupDisplay lineup={lineup} />
           </div>
         )}
+
+        {/* Narrativa de IA */}
+        <div className="md:col-span-2">
+          <NarrativeCard eventId={eventId} />
+        </div>
 
         {/* Full Analysis */}
         <div className="md:col-span-2">

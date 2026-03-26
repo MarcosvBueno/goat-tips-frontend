@@ -103,8 +103,16 @@ export interface Lineup {
 
 // ── Toplist ──────────────────────────────────────────────────────────────────
 
+export interface ToplistPlayer {
+  player_name: string;
+  team_name: string;
+  value: number;
+}
+
 export interface ToplistResponse {
-  [key: string]: unknown;
+  league_id: string;
+  top_scorers: ToplistPlayer[];
+  top_assists: ToplistPlayer[];
 }
 
 // ── Prediction ───────────────────────────────────────────────────────────────
