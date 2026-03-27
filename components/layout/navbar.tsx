@@ -1,8 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { ThemeToggleButton } from "@/components/ui/theme-toggle-button";
+import { cn } from "@/lib/utils";
+import {
+  Navbar as ResizableNavbar,
+  NavBody,
+  MobileNav,
+  MobileNavHeader,
+  MobileNavMenu,
+  MobileNavToggle,
+} from "@/components/ui/resizable-navbar";
 
 const NAV_LINKS = [
   { href: "/", label: "Home", id: "home" },
@@ -13,18 +24,15 @@ const NAV_LINKS = [
   { href: "/tipster", label: "Tipster IA", id: "tipster" },
 ];
 
-function toggleTheme() {
-  document.documentElement.classList.toggle("dark");
-}
-
 export function Navbar() {
   const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <>
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 h-[60px] flex items-center px-6 gap-0 border-b border-border backdrop-blur-lg"
-        style={{ background: "var(--nav-bg)" }}
+    <ResizableNavbar className="fixed inset-x-0 top-0 z-50 px-4 md:px-6">
+      <NavBody
+        className="h-[60px] max-w-[1200px] border border-border/60 px-4"
+        style={{ background: "color-mix(in oklab, transparent)" }}
       >
         <Link
           href="/"
@@ -46,18 +54,94 @@ export function Navbar() {
           </span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-0.5 flex-1">
+        <div className="pointer-events-none absolute inset-0 hidden items-center justify-center lg:flex">
+          <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-border/60 bg-(--bg2)/60 p-1 backdrop-blur-md">
+            {NAV_LINKS.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.id}
+                  href={link.href}
+                  className={cn(
+                    "text-[13px] font-medium px-[14px] py-[6px] rounded-full transition-all duration-200 whitespace-nowrap tracking-[0.01em] flex items-center gap-1",
+                    isActive
+                      ? "text-[#012AFE] bg-(--blue-dim) font-semibold"
+                      : "text-(--text2) hover:text-(--text) hover:bg-(--pill-bg)",
+                  )}
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  {link.live && (
+                    <span className="inline-block w-[6px] h-[6px] rounded-full bg-[#FF3B3B] animate-pulse-red" />
+                  )}
+                  {link.label}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="ml-auto flex items-center gap-[10px]">
+          <ThemeToggleButton
+            className="shrink-0 text-(--text2) hover:bg-(--bg3) hover:text-(--text)"
+            variant="polygon"
+            start="top-left"
+          />
+        </div>
+      </NavBody>
+
+      <MobileNav
+        className="border border-border/60 p-3"
+        style={{ background: "color-mix(in oklab, var(--nav-bg) 92%, transparent)" }}
+      >
+        <MobileNavHeader>
+          <Link href="/" className="flex items-center gap-2.5 no-underline shrink-0">
+            <div className="w-8 h-8 shrink-0 relative">
+              <Image
+                src="/goat-tips-logo.svg"
+                alt="Goat Tips"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <span
+              className="text-[18px] uppercase tracking-[0.02em] text-(--text) leading-none"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              GOAT <span className="text-[#012AFE]">TIPS</span>
+            </span>
+          </Link>
+
+          <div className="flex items-center gap-2">
+            <ThemeToggleButton
+              className="shrink-0 text-(--text2) hover:bg-(--bg3) hover:text-(--text)"
+              variant="polygon"
+              start="top-left"
+            />
+            <MobileNavToggle
+              isOpen={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen((current) => !current)}
+            />
+          </div>
+        </MobileNavHeader>
+
+        <MobileNavMenu
+          isOpen={isMobileMenuOpen}
+          onClose={() => setIsMobileMenuOpen(false)}
+          className="top-[68px] border border-border/60 bg-(--bg1)"
+        >
           {NAV_LINKS.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.id}
                 href={link.href}
-                className={`text-[13px] font-medium px-[14px] py-[6px] rounded-lg transition-all duration-200 whitespace-nowrap tracking-[0.01em] flex items-center gap-1 ${
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={cn(
+                  "w-full text-[14px] font-medium px-[14px] py-[8px] rounded-lg transition-all duration-200 tracking-[0.01em] flex items-center gap-2",
                   isActive
                     ? "text-[#012AFE] bg-(--blue-dim) font-semibold"
-                    : "text-(--text2) hover:text-(--text) hover:bg-(--pill-bg)"
-                }`}
+                    : "text-(--text2) hover:text-(--text) hover:bg-(--pill-bg)",
+                )}
                 style={{ fontFamily: "var(--font-body)" }}
               >
                 {link.live && (
@@ -67,63 +151,8 @@ export function Navbar() {
               </Link>
             );
           })}
-        </div>
-
-        <div className="flex items-center gap-[10px] ml-auto">
-          <button
-            onClick={toggleTheme}
-            title="Alternar tema"
-            className="w-9 h-9 rounded-lg border border-(--border2) bg-(--pill-bg) flex items-center justify-center cursor-pointer text-(--text2) hover:bg-(--bg3) hover:text-(--text) transition-all duration-200 shrink-0"
-          >
-            {/* Ícone sol — visível no modo escuro */}
-            <span className="hidden dark:block">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 12.5A5.5 5.5 0 118 2.5a5.5 5.5 0 010 11z" opacity="0.3" />
-                <path d="M8 3a5 5 0 000 10V3z" />
-              </svg>
-            </span>
-            {/* Ícone lua — visível no modo claro */}
-            <span className="block dark:hidden">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 2a6 6 0 100 12A6 6 0 008 2zm0 1a5 5 0 010 10V3z" />
-              </svg>
-            </span>
-          </button>
-          <button
-            className="text-[13px] font-semibold bg-[#012AFE] text-white border-none px-[18px] py-[8px] rounded-lg cursor-pointer tracking-[0.02em] hover:opacity-[0.88] hover:-translate-y-px transition-all duration-200 whitespace-nowrap"
-            style={{ fontFamily: "var(--font-body)" }}
-          >
-            Entrar
-          </button>
-        </div>
-      </nav>
-
-      {/* Mobile nav bar */}
-      <div
-        className="md:hidden fixed top-[60px] left-0 right-0 z-40 flex items-center gap-1 px-4 h-11 overflow-x-auto border-b border-border"
-        style={{ background: "var(--bg2)", scrollbarWidth: "none" }}
-      >
-        {NAV_LINKS.map((link) => {
-          const isActive = pathname === link.href;
-          return (
-            <Link
-              key={link.id}
-              href={link.href}
-              className={`text-[13px] font-medium px-[14px] py-[6px] rounded-lg transition-all duration-200 whitespace-nowrap tracking-[0.01em] flex items-center gap-1 shrink-0 ${
-                isActive
-                  ? "text-[#012AFE] bg-(--blue-dim) font-semibold"
-                  : "text-(--text2) hover:text-(--text) hover:bg-(--pill-bg)"
-              }`}
-              style={{ fontFamily: "var(--font-body)" }}
-            >
-              {link.live && (
-                <span className="inline-block w-[6px] h-[6px] rounded-full bg-[#FF3B3B] animate-pulse-red" />
-              )}
-              {link.label}
-            </Link>
-          );
-        })}
-      </div>
-    </>
+        </MobileNavMenu>
+      </MobileNav>
+    </ResizableNavbar>
   );
 }
