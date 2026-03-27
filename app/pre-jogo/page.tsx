@@ -26,7 +26,7 @@ export default function PreJogoPage() {
         <header className="mb-8 sm:mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 animate-fade-in">
           <div>
             <h1
-              className="text-4xl sm:text-5xl md:text-7xl font-black leading-none mb-4 uppercase tracking-[-0.02em] text-(--text)"
+              className="text-4xl sm:text-5xl md:text-7xl font-black leading-none mb-4 uppercase text-(--text)"
               style={{ fontFamily: "var(--font-display)" }}
             >
               Próximos Jogos
