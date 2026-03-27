@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import type { Match } from "@/types/api";
+import { ChevronRight } from "lucide-react";
 
 interface UpcomingCardProps {
   match: Match;
@@ -16,16 +17,16 @@ function useCountdown(kickOffTime: string) {
     function update() {
       const diff = new Date(kickOffTime).getTime() - Date.now();
       if (diff <= 0) {
-        setLabel("Agora");
+        setLabel("AGORA");
         return;
       }
       const days = Math.floor(diff / 86_400_000);
       const hours = Math.floor((diff % 86_400_000) / 3_600_000);
       const minutes = Math.floor((diff % 3_600_000) / 60_000);
 
-      if (days > 0) setLabel(`${days}d ${hours}h`);
-      else if (hours > 0) setLabel(`${hours}h ${minutes}m`);
-      else setLabel(`${minutes}m`);
+      if (days > 0) setLabel(`${days.toString().padStart(2, '0')}D ${hours.toString().padStart(2, '0')}H`);
+      else if (hours > 0) setLabel(`${hours.toString().padStart(2, '0')}H ${minutes.toString().padStart(2, '0')}M`);
+      else setLabel(`${minutes.toString().padStart(2, '0')}M`);
     }
 
     update();
@@ -47,94 +48,147 @@ export function UpcomingCard({ match }: UpcomingCardProps) {
   const dateStr = kickOff.toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "short",
-  });
+  }).replace(". de", "");
+
+  // Calculate generic probability indicators based on odds
+  let homeProb = 33, drawProb = 34, awayProb = 33;
+  if (match.probabilities && match.probabilities.home_win > 0) {
+    homeProb = Math.round(match.probabilities.home_win * 100);
+    drawProb = Math.round(match.probabilities.draw * 100);
+    awayProb = Math.round(match.probabilities.away_win * 100);
+  } else if (match.odds && match.odds.home_win > 0) {
+    const rawHome = 1 / match.odds.home_win;
+    const rawDraw = 1 / match.odds.draw;
+    const rawAway = 1 / match.odds.away_win;
+    const totalRaw = rawHome + rawDraw + rawAway;
+    
+    if (totalRaw > 0) {
+      homeProb = Math.round((rawHome / totalRaw) * 100);
+      drawProb = Math.round((rawDraw / totalRaw) * 100);
+      awayProb = Math.round((rawAway / totalRaw) * 100);
+    }
+  }
 
   return (
-    <Link href={`/partida/${match.event_id}`} className="no-underline">
-      <div className="bg-card border border-border rounded-[14px] px-6 py-5 flex items-center gap-5 cursor-pointer hover:border-(--border2) hover:bg-(--card2) transition-all duration-200 flex-wrap">
-        <div className="bg-(--blue-dim) rounded-lg px-[14px] py-[10px] text-center min-w-[72px] shrink-0">
-          <div
-            className="text-[20px] text-[#012AFE] leading-none"
+    <Link href={`/partida/${match.event_id}`} className="no-underline block">
+      <div className="group relative bg-(--card2) hover:bg-(--surface) transition-colors duration-300 p-4 sm:p-6 flex flex-col lg:flex-row items-center gap-4 sm:gap-6 lg:gap-8 overflow-hidden rounded-[14px] border border-(--border)">
+        {/* Hover Highlight Bar */}
+        <div className="absolute top-0 left-0 w-1 h-full bg-[var(--primary)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        
+        {/* Time & Countdown */}
+        <div className="flex flex-col items-center lg:items-start min-w-[100px] lg:min-w-[120px] mb-2 lg:mb-0">
+          <span 
+            className="text-(--text) text-xl sm:text-2xl uppercase tracking-[-0.02em]"
             style={{ fontFamily: "var(--font-display)" }}
           >
             {countdown}
-          </div>
-          <div className="text-[10px] text-[#012AFE] opacity-70 mt-0.5 font-medium uppercase">
-            {dateStr} · {timeStr}
-          </div>
+          </span>
+          <span className="text-(--text2) text-[10px] sm:text-xs uppercase tracking-tighter mt-1 font-medium">
+            {dateStr} {timeStr}
+          </span>
         </div>
 
-        <div className="flex-1 flex items-center gap-[14px]">
-          <div className="flex items-center gap-2">
-            {match.home.image_url && (
-              <Image
-                src={match.home.image_url}
-                alt={match.home.name}
-                width={24}
-                height={24}
-                className="rounded-full object-contain"
-              />
-            )}
-            <span className="text-[15px] font-bold text-(--text)">
+        {/* League / Round */}
+        <div className="hidden xl:flex flex-col min-w-[140px]">
+          <span className="text-(--text3) text-[10px] uppercase tracking-[0.2em] mb-1 font-bold">
+            Liga
+          </span>
+          <span className="text-(--text) font-bold text-xs uppercase">
+            {match.round || "Premier League"}
+          </span>
+        </div>
+
+        {/* Teams VS */}
+        <div className="flex-1 grid grid-cols-[100px_40px_100px] sm:grid-cols-[120px_40px_120px] lg:grid-cols-[140px_60px_140px] justify-center lg:justify-start items-center w-full lg:w-auto my-2 lg:my-0">
+          <div className="flex flex-col items-center gap-1.5 sm:gap-2 w-full">
+            <div className="w-10 h-10 sm:w-14 sm:h-14 bg-(--bg2) rounded-full flex items-center justify-center p-1.5 sm:p-2 border border-(--border2)">
+              {match.home.image_url ? (
+                <Image
+                  src={match.home.image_url}
+                  alt={match.home.name}
+                  width={32}
+                  height={32}
+                  className="object-contain w-6 h-6 sm:w-8 sm:h-8"
+                />
+              ) : (
+                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-(--border)" />
+              )}
+            </div>
+            <span
+              className="text-[10px] sm:text-sm tracking-widest text-(--text) uppercase w-full text-center truncate px-1"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
               {match.home.name}
             </span>
           </div>
-          <span className="text-[12px] text-(--text3) font-medium">vs</span>
-          <div className="flex items-center gap-2">
-            <span className="text-[15px] font-bold text-(--text)">
+          
+          <div 
+            className="text-(--text3) text-sm sm:text-xl opacity-30 text-center"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            VS
+          </div>
+          
+          <div className="flex flex-col items-center gap-1.5 sm:gap-2 w-full">
+            <div className="w-10 h-10 sm:w-14 sm:h-14 bg-(--bg2) rounded-full flex items-center justify-center p-1.5 sm:p-2 border border-(--border2)">
+              {match.away.image_url ? (
+                <Image
+                  src={match.away.image_url}
+                  alt={match.away.name}
+                  width={32}
+                  height={32}
+                  className="object-contain w-6 h-6 sm:w-8 sm:h-8"
+                />
+              ) : (
+                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-(--border)" />
+              )}
+            </div>
+            <span
+              className="text-[10px] sm:text-sm tracking-widest text-(--text) uppercase w-full text-center truncate px-1"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
               {match.away.name}
             </span>
-            {match.away.image_url && (
-              <Image
-                src={match.away.image_url}
-                alt={match.away.name}
-                width={24}
-                height={24}
-                className="rounded-full object-contain"
-              />
-            )}
           </div>
         </div>
 
-        <div className="text-right shrink-0">
-          <div className="text-[11px] text-(--text2) font-semibold uppercase tracking-[0.06em]">
-            Premier League
-          </div>
-          <div className="text-[11px] text-(--text3) mt-0.5">
-            {match.stadium ?? ""}
+        {/* Poisson Probability (Odds Indicator) */}
+        <div className="flex flex-col items-center lg:items-end gap-2 sm:gap-3 min-w-[200px] sm:min-w-[280px] w-full lg:w-auto mt-2 lg:mt-0">
+          <span className="text-(--text2) text-[10px] uppercase tracking-[0.2em] font-bold">
+            Probabilidade Poisson
+          </span>
+          <div className="flex gap-1 w-full h-10 bg-(--bg2) rounded overflow-hidden p-1 border border-(--border2)">
+            {/* Home */}
+            <div 
+              className={`flex flex-col justify-center items-center rounded-sm transition-all ${homeProb > Math.max(drawProb, awayProb) ? 'bg-[var(--primary)]' : 'bg-(--bg3)'}`} 
+              style={{ width: `${homeProb}%` }}
+            >
+              <span className={`text-[10px] font-bold ${homeProb > Math.max(drawProb, awayProb) ? 'text-white' : 'text-(--text)'}`}>{homeProb}%</span>
+              <span className={`text-[8px] uppercase font-semibold ${homeProb > Math.max(drawProb, awayProb) ? 'text-white/70' : 'text-(--text2)'}`}>Casa</span>
+            </div>
+            {/* Draw */}
+            <div 
+              className={`flex flex-col justify-center items-center rounded-sm transition-all ${drawProb > Math.max(homeProb, awayProb) ? 'bg-[var(--primary)]' : 'bg-(--bg3)'}`} 
+              style={{ width: `${drawProb}%` }}
+            >
+              <span className={`text-[10px] font-bold ${drawProb > Math.max(homeProb, awayProb) ? 'text-white' : 'text-(--text)'}`}>{drawProb}%</span>
+              <span className={`text-[8px] uppercase font-semibold ${drawProb > Math.max(homeProb, awayProb) ? 'text-white/70' : 'text-(--text2)'}`}>Empate</span>
+            </div>
+            {/* Away */}
+            <div 
+              className={`flex flex-col justify-center items-center rounded-sm transition-all ${awayProb > Math.max(homeProb, drawProb) ? 'bg-[var(--primary)]' : 'bg-(--bg3)'}`} 
+              style={{ width: `${awayProb}%` }}
+            >
+              <span className={`text-[10px] font-bold ${awayProb > Math.max(homeProb, drawProb) ? 'text-white' : 'text-(--text)'}`}>{awayProb}%</span>
+              <span className={`text-[8px] uppercase font-semibold ${awayProb > Math.max(homeProb, drawProb) ? 'text-white/70' : 'text-(--text2)'}`}>Fora</span>
+            </div>
           </div>
         </div>
 
-        {match.odds && (
-          <div className="hidden sm:flex gap-1.5 shrink-0">
-            {[
-              {
-                value: match.odds.home_win.toFixed(2),
-                label: match.home.name.slice(0, 3).toUpperCase(),
-              },
-              { value: match.odds.draw.toFixed(2), label: "EMP" },
-              {
-                value: match.odds.away_win.toFixed(2),
-                label: match.away.name.slice(0, 3).toUpperCase(),
-              },
-            ].map((prob) => (
-              <div
-                key={prob.label}
-                className="bg-(--pill-bg) border border-border rounded-lg px-3 py-2 text-center"
-              >
-                <span
-                  className="text-[16px] text-(--text) block leading-none"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  {prob.value}
-                </span>
-                <span className="text-[10px] text-(--text2) font-medium mt-0.5 block">
-                  {prob.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
+        {/* Action */}
+        <div className="hidden lg:flex shrink-0">
+          <ChevronRight className="w-5 h-5 text-(--text3) group-hover:text-[var(--primary)] transition-colors" />
+        </div>
       </div>
     </Link>
   );

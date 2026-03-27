@@ -46,7 +46,7 @@ interface MatchChatProps {
 
 export function MatchChat({ eventId }: MatchChatProps) {
   const [input, setInput] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const { getOrCreateSession, addMessage, setTyping, clearSession } = useChatStore();
   const session = useChatStore((s) => s.sessions[eventId] ?? null);
@@ -57,7 +57,12 @@ export function MatchChat({ eventId }: MatchChatProps) {
   const { messages, isTyping, sessionId } = currentSession;
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
   }, [messages, isTyping]);
 
   function sendMessage(text?: string) {
@@ -133,7 +138,10 @@ export function MatchChat({ eventId }: MatchChatProps) {
       </div>
 
       {/* Mensagens */}
-      <div className="flex flex-col gap-3 px-5 py-4 max-h-[480px] overflow-y-auto min-h-[200px]">
+      <div 
+        ref={chatContainerRef}
+        className="flex flex-col gap-3 px-5 py-4 max-h-[480px] overflow-y-auto min-h-[200px]"
+      >
         {messages.length === 0 && !isTyping && (
           <div className="text-center text-[13px] text-(--text3) py-10">
             Faça uma pergunta sobre esta partida
@@ -186,7 +194,6 @@ export function MatchChat({ eventId }: MatchChatProps) {
             </div>
           </div>
         )}
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Input */}
