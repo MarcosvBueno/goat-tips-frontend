@@ -2,51 +2,86 @@ import Link from "next/link";
 
 export function Hero() {
   return (
-    <div className="px-6 pt-12 pb-8 max-w-[1280px] mx-auto">
-      <div className="text-[12px] font-semibold text-[#012AFE] tracking-[0.1em] uppercase mb-3 flex items-center gap-2">
-        <span className="block w-5 h-0.5 bg-[#012AFE] rounded-sm" />
-        Análise com IA · Premier League 2025/26
+    <section className="relative px-6 pt-10 pb-8 max-w-[1280px] mx-auto overflow-hidden">
+      <div className="relative grid items-center gap-8 lg:grid-cols-[minmax(0,700px)_1fr]">
+        <div>
+          <div className="text-[12px] font-semibold text-[#012AFE] tracking-[0.1em] uppercase mb-3 flex items-center gap-2">
+            <span className="block w-5 h-0.5 bg-[#012AFE] rounded-sm" />
+            Análise com IA · Premier League 2025/26
+          </div>
+
+          <h1
+            className="text-[clamp(40px,7vw,84px)] leading-[0.95] uppercase tracking-[-0.01em] text-(--text) mb-5 max-w-[680px]"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            Tips que<br />
+            <span className="text-[#012AFE]">realmente</span>
+            <br />convertem.
+          </h1>
+
+          <p className="text-[15px] text-(--text2) max-w-[460px] leading-[1.65] mb-7">
+            Probabilidades calibradas com dados históricos, modelo Expectativa de Gols ao vivo e análise de padrões. Sem viés humano, sem achismo.
+          </p>
+
+          <div className="flex items-center gap-3 flex-wrap">
+            <Link
+              href="/ao-vivo"
+              className="text-[13px] font-semibold bg-[#012AFE] text-white border-none px-[18px] py-[8px] rounded-lg cursor-pointer tracking-[0.02em] hover:opacity-[0.88] hover:-translate-y-px transition-all duration-200 whitespace-nowrap no-underline"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              Ver jogos ao vivo
+            </Link>
+            <Link
+              href="/tipster"
+              className="text-[13px] font-semibold bg-transparent text-(--text) border border-(--border2) px-[18px] py-[8px] rounded-lg cursor-pointer tracking-[0.02em] hover:bg-(--pill-bg) hover:border-(--text3) transition-all duration-200 whitespace-nowrap no-underline"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              Perguntar ao Goat AI
+            </Link>
+          </div>
+        </div>
+
+        <div className="relative hidden lg:block h-[420px]">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="relative w-[360px] h-[360px]">
+              <svg
+                viewBox="0 0 511.8 531"
+                className="w-full h-full"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M362.8,160.2c0.7,1.4,2.2,2.3,3.8,2.3H405c1,0,2-0.4,2.8-1l59.5-51.1c3-2.6,1.2-7.5-2.8-7.5H340.8 c-3.2,0-5.2,3.3-3.8,6.2L362.8,160.2z"
+                  className="hero-outline-stroke"
+                  pathLength={1}
+                  stroke="#012AFE"
+                  strokeWidth="8"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M510,312.9l-82.3-82.3c-3.4-3.4-9.2-1.6-10,3.2l-11.9,68.7c-0.5,2.9-3,5-5.9,4.9l-173-2.7 c-3.7-0.1-6.4-3.4-5.7-7l11.9-62.9c0.9-4.7,6.6-6.5,10-3.1l20.1,19.7l-2.6,24.4c-0.4,4.6,1,3.8,2.9,1.4c2.9-3,6.2-4.9,9.9-6.2 c1.3-0.4,2.5,0.6,2.4,2l0,0c-0.7,4.6-0.7,4.3,3,1.6c3.7-2.7,1.9-1.4,2.9-1.9c1.3-0.7,2.9-0.4,3.9,0.6l1.9,1.9 c1.8,1.7,4.5,2.2,6.7,1.1l7.5-3.6l79.4-37.7c2.8-1.3,4-4.7,2.6-7.5L319.9,98.7c-0.4-0.8-0.6-1.7-0.6-2.6V28.7c0-0.9-0.4-1.8-1-2.4 L273.9,0.5l-4.8,0l-66.4,56.4c-9.4,7.9-9.3,7.9,3,5.7c12.3-2.2,53.8-6.9,53.8-6.9c2.1-0.4,4,1.2,4,3.3v23.6c0,3.3-2.7,6-6,5.9 l-70.7-0.5c-3.3,0-5.9-2.7-5.9-5.9c0,0,0.4-56.7,0-55.6c-0.4,1.1,0,0,0,0C166.8,16.2,135.5,0,135.5,0l-4.8,0 c0,0-61.5,52.8-70.1,60.6s-11.7,8.8,3,5.7c15.4-2.5,55-10.6,55-10.6c2.1-0.4,4,1.2,4,3.3v37.4c0,3.3-2.7,5.9-5.9,5.9H7.6 c-5.3,0-7.9,6.4-4.2,10.1l61.2,61.1c1.2,1.2,2.8,1.9,4.5,1.9l48.7-0.3c5,0,8.1,5.4,5.4,9.7L52.9,298.5c-2.4,3.9,0.4,9,5,9.1 l30.8,0.2c5.3,0,7.9,6.4,4.1,10.1l-45.4,45.4c-1.8,1.8-2.3,4.7-1,7l83.8,157.6c2.1,4,7.8,4.2,10.3,0.4l62-98.6 c2.5-4,8.4-3.6,10.4,0.6l44.4,93.3c2,4.2,7.8,4.6,10.3,0.7l56.6-86.4c2.6-3.9,8.5-3.5,10.4,0.8l39.1,87.9c1.9,4.4,8,4.8,10.5,0.7 l126.7-207C512.3,317.9,512,314.8,510,312.9z M211.1,178.5c-0.5-0.4-1-0.9-1.4-1.4c-15.8-22,8.6-46.4,30.6-30.6 c0.5,0.4,1,0.9,1.4,1.4C257.5,169.9,233.2,194.3,211.1,178.5z"
+                  className="hero-outline-stroke"
+                  pathLength={1}
+                  stroke="#012AFE"
+                  strokeWidth="8"
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <h1
-        className="text-[clamp(40px,7vw,84px)] leading-[0.95] uppercase tracking-[-0.01em] text-(--text) mb-5 max-w-[680px]"
-        style={{ fontFamily: "var(--font-display)" }}
-      >
-        Tips que<br />
-        <span className="text-[#012AFE]">realmente</span>
-        <br />convertem.
-      </h1>
-
-      <p className="text-[15px] text-(--text2) max-w-[420px] leading-[1.6] mb-7">
-        Probabilidades calibradas com dados históricos, modelo xG ao vivo e análise de padrões. Sem viés humano, sem achismo.
-      </p>
-
-      <div className="flex items-center gap-3 flex-wrap">
-        <Link
-          href="/ao-vivo"
-          className="text-[13px] font-semibold bg-[#012AFE] text-white border-none px-[18px] py-[8px] rounded-lg cursor-pointer tracking-[0.02em] hover:opacity-[0.88] hover:-translate-y-px transition-all duration-200 whitespace-nowrap no-underline"
-          style={{ fontFamily: "var(--font-body)" }}
-        >
-          Ver jogos ao vivo
-        </Link>
-        <Link
-          href="/tipster"
-          className="text-[13px] font-semibold bg-transparent text-(--text) border border-(--border2) px-[18px] py-[8px] rounded-lg cursor-pointer tracking-[0.02em] hover:bg-(--pill-bg) hover:border-(--text3) transition-all duration-200 whitespace-nowrap no-underline"
-          style={{ fontFamily: "var(--font-body)" }}
-        >
-          Perguntar ao Tipster IA
-        </Link>
-      </div>
-
-      <div className="flex items-center gap-6 mt-8 pt-6 border-t border-border flex-wrap">
+      <div className="relative z-10 flex items-center gap-6 mt-8 pt-6 border-t border-border flex-wrap">
         <div>
           <div
             className="text-[28px] text-(--text) leading-none tracking-[0.01em]"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            84<span className="text-[#012AFE]">%</span>
+            0.2<span className="text-[#012AFE]">~</span>
           </div>
-          <div className="text-[12px] text-(--text2) mt-[3px]">Acurácia geral</div>
+          <div className="text-[12px] text-(--text2) mt-[3px]">Brier Score</div>
         </div>
         <div className="w-px h-9 bg-border" />
         <div>
@@ -54,9 +89,9 @@ export function Hero() {
             className="text-[28px] text-(--text) leading-none tracking-[0.01em]"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            1.8<span className="text-[#012AFE]">k+</span>
+            4.5<span className="text-[#012AFE]">M</span>
           </div>
-          <div className="text-[12px] text-(--text2) mt-[3px]">Partidas analisadas</div>
+          <div className="text-[12px] text-(--text2) mt-[3px]">Dados Históricos</div>
         </div>
         <div className="w-px h-9 bg-border" />
         <div>
@@ -64,11 +99,21 @@ export function Hero() {
             className="text-[28px] text-(--text) leading-none tracking-[0.01em]"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            3<span className="text-[#012AFE]"> APIs</span>
+            1 <span className="text-[#012AFE]"> API</span>
+          </div>
+          <div className="text-[12px] text-(--text2) mt-[3px]">Conexão com fontes oficiais</div>
+        </div>
+        <div className="w-px h-9 bg-border" />
+        <div>
+          <div
+            className="text-[28px] text-(--text) leading-none tracking-[0.01em]"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            2 <span className="text-[#012AFE]"> DATASETS</span>
           </div>
           <div className="text-[12px] text-(--text2) mt-[3px]">Fontes de dados</div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

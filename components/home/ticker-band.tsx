@@ -11,35 +11,30 @@ const TICKER_ITEMS = [
   { type: "dot" as const },
   { type: "text" as const, content: "Dados do StatsBomb · FBref · BetsAPI" },
   { type: "brand" as const },
-  { type: "text" as const, content: "84% de acurácia comprovada" },
+  { type: "text" as const, content: "0.2~ Brier Score" },
   { type: "dot" as const },
   { type: "text" as const, content: "Probabilidades calibradas sem viés humano" },
   { type: "dot" as const },
   { type: "text" as const, content: "Tips que realmente convertem" },
   { type: "brand" as const },
-  { type: "text" as const, content: "xG · PPDA · Over/Under com precisão" },
+  { type: "text" as const, content: "Expectativa de Gols · PPDA · Over/Under com precisão" },
   { type: "dot" as const },
-  { type: "text" as const, content: "1.8k+ partidas analisadas" },
+  { type: "text" as const, content: "4.5M+ Dados Analisados" },
   { type: "dot" as const },
   { type: "text" as const, content: "Jogue com responsabilidade" },
 ];
 
 function BrandMark() {
   return (
-    <span className="inline-flex items-center gap-2 mx-8 shrink-0">
-      <span className="relative w-5 h-5 shrink-0">
+    <span className="inline-flex items-center gap-2.5 mx-8 shrink-0">
+
+      <span className="relative w-[68px] h-[18px] shrink-0 opacity-90">
         <Image
-          src="/goat-tips-logo.svg"
-          alt="Goat Tips"
+          src="/azul-logo-horizontal.svg"
+          alt=""
           fill
-          className="object-contain brightness-0 invert opacity-90"
+          className="object-contain brightness-0 invert"
         />
-      </span>
-      <span
-        className="text-[15px] uppercase tracking-[0.06em] text-white/90 leading-none"
-        style={{ fontFamily: "var(--font-display)" }}
-      >
-        GOAT TIPS
       </span>
     </span>
   );

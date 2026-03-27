@@ -10,7 +10,7 @@ import type { ChatMessage, NarrativeResponse } from "@/types/api";
 
 const SUGGESTIONS = [
   "Arsenal vai ganhar?",
-  "Melhor xG da rodada",
+  "Melhor Expectativa de Gols da rodada",
   "Performance do Saka",
   "Árbitro de hoje",
 ];
@@ -170,6 +170,9 @@ export function FloatingBot() {
             {/* Painel do chat */}
             <motion.div
               className="fixed z-50 flex flex-col overflow-hidden bg-card border border-border rounded-[20px] shadow-[0_24px_64px_rgba(0,0,0,0.18),0_0_0_1px_rgba(1,42,254,0.12)] dark:shadow-[0_24px_64px_rgba(0,0,0,0.7),0_0_0_1px_rgba(1,42,254,0.15)]"
+              data-lenis-prevent=""
+              data-lenis-prevent-wheel=""
+              data-lenis-prevent-touch=""
               style={{
                 bottom: "88px",
                 right: "20px",
@@ -186,7 +189,7 @@ export function FloatingBot() {
                 <div className="w-9 h-9 rounded-full bg-[#012AFE] flex items-center justify-center shrink-0">
                   <div className="relative w-5 h-5">
                     <Image
-                      src="/goat-tips-logo.svg"
+                      src="/azul-simbolo.svg"
                       alt="Goat Tips IA"
                       fill
                       className="object-contain brightness-0 invert"
@@ -199,7 +202,7 @@ export function FloatingBot() {
                     className="text-[14px] font-semibold leading-tight text-(--text)"
                     style={{ fontFamily: "var(--font-body)" }}
                   >
-                    Tipster IA
+                    Goat AI
                   </div>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#00D68F]" />
@@ -245,6 +248,7 @@ export function FloatingBot() {
               {/* Mensagens */}
               <div
                 className="flex-1 flex flex-col gap-3 px-4 py-4 overflow-y-auto"
+                data-lenis-prevent=""
                 style={{ scrollbarWidth: "none" }}
               >
                 {messages.length === 0 && (
@@ -262,7 +266,7 @@ export function FloatingBot() {
                       <div className="w-7 h-7 rounded-full bg-[#012AFE] flex items-center justify-center shrink-0 mt-0.5">
                         <div className="relative w-4 h-4">
                           <Image
-                            src="/goat-tips-logo.svg"
+                            src="/azul-simbolo.svg"
                             alt=""
                             fill
                             className="object-contain brightness-0 invert"
@@ -296,7 +300,7 @@ export function FloatingBot() {
                     <div className="w-7 h-7 rounded-full bg-[#012AFE] flex items-center justify-center shrink-0">
                       <div className="relative w-4 h-4">
                         <Image
-                          src="/goat-tips-logo.svg"
+                          src="/azul-simbolo.svg"
                           alt=""
                           fill
                           className="object-contain brightness-0 invert"
@@ -354,7 +358,7 @@ export function FloatingBot() {
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.93 }}
           transition={{ type: "spring", stiffness: 400, damping: 22 }}
-          aria-label="Abrir Tipster IA"
+          aria-label="Abrir Goat AI"
           style={{
             background: "linear-gradient(135deg, #0038FF 0%, #012AFE 60%, #001ED4 100%)",
             boxShadow: isOpen
@@ -415,7 +419,7 @@ export function FloatingBot() {
                 transition={{ duration: 0.18 }}
               >
                 <Image
-                  src="/goat-tips-logo.svg"
+                  src="/azul-simbolo.svg"
                   alt="Goat Tips IA"
                   fill
                   className="object-contain brightness-0 invert"

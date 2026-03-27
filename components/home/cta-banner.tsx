@@ -4,9 +4,10 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 const STATS = [
-  { label: 'Acurácia', value: '84%' },
-  { label: 'Partidas', value: '1.8k' },
-  { label: 'Mercados', value: '12+' },
+  { label: 'Brier Score', value: '0.2~' },
+  { label: 'Dados Históricos', value: '4.5M' },
+  { label: 'Conexão com fontes oficiais', value: '1 API' },
+  { label: 'Fontes de dados', value: '2 DATASETS' },
 ];
 
 export function CtaBanner() {
@@ -64,12 +65,14 @@ export function CtaBanner() {
         {/* Large decorative logo — bottom right */}
         <div className="absolute right-[-60px] bottom-[-60px] w-[440px] h-[440px] pointer-events-none opacity-[0.08] dark:opacity-[0.055]">
           <Image
-            src="/goat-tips-logo.svg"
+            src="/azul-simbolo.svg"
             alt=""
             fill
             className="object-contain"
           />
         </div>
+
+      
 
         {/* ── Main content ───────────────────────────────────────── */}
         <div className="relative z-10 grid md:grid-cols-[1fr_auto] gap-10 items-end px-8 pt-7 pb-0 md:px-14 md:pt-10">
@@ -96,18 +99,21 @@ export function CtaBanner() {
             </p>
 
             {/* Stats row */}
-            <div className="flex items-center gap-8 mt-5 pt-5 border-t border-black/5 dark:border-white/5">
-              {STATS.map(s => (
-                <div key={s.label} className="flex flex-col gap-0.5">
+            <div className="flex items-center gap-5 mt-5 pt-5 border-t border-black/5 dark:border-white/5 flex-wrap md:flex-nowrap">
+              {STATS.map((s, idx) => (
+                <div key={s.label} className="flex items-center gap-5">
+                  {idx > 0 && <div className="hidden md:block w-px h-9 bg-black/8 dark:bg-white/10" />}
+                  <div className="flex flex-col gap-0.5">
                   <span
                     className="text-[30px] leading-none text-[#0A0F2E] dark:text-white"
                     style={{ fontFamily: 'var(--font-display)' }}
                   >
                     {s.value}
                   </span>
-                  <span className="text-[10px] tracking-[0.06em] uppercase text-[#0A0F2E]/40 dark:text-white/30">
+                  <span className="text-[10px] tracking-[0.04em] uppercase text-[#0A0F2E]/40 dark:text-white/30 whitespace-nowrap">
                     {s.label}
                   </span>
+                </div>
                 </div>
               ))}
             </div>
@@ -152,7 +158,7 @@ export function CtaBanner() {
         <div className="relative z-10 flex items-center gap-3 px-8 md:px-14 py-2.5 mt-4 border-t border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-black/25">
           <span className="w-1.5 h-1.5 rounded-full bg-[#012AFE] shrink-0 animate-pulse-red" />
           <span className="text-[10px] tracking-widest uppercase text-[#0A0F2E]/40 dark:text-white/20">
-            MODELO xG · STATSBOMB · FBREF · ODDS AO VIVO
+            MODELO Poisson · STATSBOMB · FBREF · ODDS AO VIVO
           </span>
         </div>
       </motion.div>

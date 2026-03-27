@@ -218,6 +218,13 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes hero-draw-erase {
+  0% { stroke-dashoffset: 1; }
+  45% { stroke-dashoffset: 0; }
+  55% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 1; }
+}
+
 .animate-pulse-red {
   animation: pulse-red 1.4s ease-in-out infinite;
 }
@@ -228,4 +235,10 @@
 
 .animate-fade-in {
   animation: fade-in 0.25s ease;
+}
+
+.hero-outline-stroke {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: hero-draw-erase 5.8s ease-in-out infinite;
 }

@@ -30,7 +30,7 @@ export function HeroWave({
   className,
   style,
   extendLeftPx = 320,
-  title = "Tipster AI.",
+  title = "Goat AI.",
   subtitle = "Analise partidas, tendencias e mercados com contexto ao vivo.",
   placeholder = "Descreva o que voce quer analisar...",
   buttonText = "Gerar",
@@ -60,7 +60,7 @@ export function HeroWave({
   }
 
   const INITIAL_CONTENT =
-    "Ola! Sou o Tipster IA da GOAT TIPS. Pergunte sobre partidas, mercados, jogadores e tendencias para receber analises com dados ao vivo e historicos.";
+    "Olá! Sou o Goat AI da GOAT TIPS. Pergunte sobre partidas, mercados, jogadores e tendências para receber análises com dados ao vivo e históricos.";
 
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -855,7 +855,7 @@ export function HeroWave({
       ref={containerRef}
       className={className}
       style={{ position: "relative", width: "100%", minHeight: "100vh", ...style }}
-      aria-label="Hero Tipster"
+      aria-label="Hero Goat"
     >
       <div
         style={{
@@ -914,6 +914,9 @@ export function HeroWave({
             <motion.div
               layout
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              data-lenis-prevent=""
+              data-lenis-prevent-wheel=""
+              data-lenis-prevent-touch=""
               className={`w-full sm:w-[720px] rounded-2xl border shadow-[0_1px_2px_0_rgba(0,0,0,0.06)] overflow-hidden ${
                 hasStartedConversation ? "sm:w-[980px]" : "sm:w-[720px]"
               } ${
@@ -974,7 +977,11 @@ export function HeroWave({
                     initial={false}
                     animate={{ minHeight: hasStartedConversation ? 520 : 0 }}
                     transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                    className="max-h-[430px] overflow-y-auto p-4 flex flex-col gap-3 text-left"
+                    data-lenis-prevent=""
+                    data-lenis-prevent-wheel=""
+                    data-lenis-prevent-touch=""
+                    className="max-h-[430px] overflow-y-auto overscroll-contain p-4 flex flex-col gap-3 text-left"
+                    style={{ WebkitOverflowScrolling: "touch" }}
                   >
                     {messages.map((msg) => (
                       <div
@@ -985,7 +992,7 @@ export function HeroWave({
                           <div className="w-8 h-8 rounded-full bg-[#012AFE] flex items-center justify-center shrink-0 mt-0.5">
                             <div className="relative w-4 h-4">
                               <Image
-                                src="/goat-tips-logo.svg"
+                                src="/azul-simbolo.svg"
                                 alt=""
                                 fill
                                 className="object-contain brightness-0 invert"
@@ -1013,7 +1020,7 @@ export function HeroWave({
                       <div className="flex gap-3 items-start">
                         <div className="w-8 h-8 rounded-full bg-[#012AFE] flex items-center justify-center shrink-0">
                           <div className="relative w-4 h-4">
-                            <Image src="/goat-tips-logo.svg" alt="" fill className="object-contain brightness-0 invert" />
+                            <Image src="/azul-simbolo.svg" alt="" fill className="object-contain brightness-0 invert" />
                           </div>
                         </div>
                         <div className="bg-(--bg2) border border-border rounded-[14px] rounded-bl-[4px] px-4 py-3">
