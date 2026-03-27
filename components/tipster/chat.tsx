@@ -43,7 +43,7 @@ const SUGGESTIONS = [
 ];
 
 const INITIAL_CONTENT =
-  "Olá! Sou o Tipster IA da GOAT TIPS. Tenho acesso a dados ao vivo da BetsAPI, histórico de 4.585 jogos e previsões com modelo Poisson calibrado. O que você quer analisar hoje?";
+  "Olá! Sou o Goat AI da GOAT TIPS. Tenho acesso a dados ao vivo da BetsAPI, histórico de 4.585 jogos e previsões com modelo Poisson calibrado. O que você quer analisar hoje?";
 
 export function Chat() {
   const [input, setInput] = useState("");
@@ -126,7 +126,7 @@ export function Chat() {
                 <div className="w-8 h-8 rounded-full bg-[#012AFE] flex items-center justify-center shrink-0 mt-0.5">
                   <div className="relative w-4 h-4">
                     <Image
-                      src="/goat-tips-logo.svg"
+                      src="/azul-simbolo.svg"
                       alt=""
                       fill
                       className="object-contain brightness-0 invert"
@@ -160,7 +160,7 @@ export function Chat() {
             <div className="flex gap-3 items-start">
               <div className="w-8 h-8 rounded-full bg-[#012AFE] flex items-center justify-center shrink-0">
                 <div className="relative w-4 h-4">
-                  <Image src="/goat-tips-logo.svg" alt="" fill className="object-contain brightness-0 invert" />
+                  <Image src="/azul-simbolo.svg" alt="" fill className="object-contain brightness-0 invert" />
                 </div>
               </div>
               <div className="bg-(--bg2) border border-border rounded-[14px] rounded-bl-[4px] px-4 py-3">

@@ -222,24 +222,13 @@ const FOOTER_LINKS = [
       { id: 2, title: "Ao Vivo", url: "/ao-vivo" },
       { id: 3, title: "Pré-jogo", url: "/pre-jogo" },
       { id: 4, title: "Analytics", url: "/analytics" },
+      { id: 5, title: "Simulador", url: "/simulador" },
     ],
   },
   {
     title: "IA",
     links: [
-      { id: 5, title: "Tipster IA", url: "/tipster" },
-      { id: 6, title: "Modelo xG", url: "#" },
-      { id: 7, title: "StatsBomb", url: "#" },
-      { id: 8, title: "FBref", url: "#" },
-    ],
-  },
-  {
-    title: "Empresa",
-    links: [
-      { id: 9, title: "Sobre", url: "#" },
-      { id: 10, title: "Contato", url: "#" },
-      { id: 11, title: "Termos", url: "#" },
-      { id: 12, title: "Privacidade", url: "#" },
+      { id: 6, title: "Goat AI", url: "/tipster" },
     ],
   },
 ];
@@ -287,20 +276,17 @@ export function Footer() {
       <div className="flex flex-col md:flex-row md:items-start md:justify-between p-8 md:p-10 max-w-[1280px] mx-auto gap-10">
         {/* Brand column */}
         <div className="flex flex-col items-start gap-5 max-w-xs">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-7 h-7 shrink-0 relative">
-              <Image src="/goat-tips-logo.svg" alt="Goat Tips" fill className="object-contain" />
+          <Link href="/" className="flex items-center gap-3">
+            <div className="w-9 h-9 shrink-0 relative rounded-full border border-border/70 bg-(--bg2) p-1.5">
+              <Image src="/azul-simbolo.svg" alt="Goat Tips" fill className="object-contain p-1" />
             </div>
-            <span
-              className="text-[18px] uppercase tracking-[0.02em] text-(--text) leading-none"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              GOAT <span className="text-[#012AFE]">TIPS</span>
-            </span>
+            <div className="w-[142px] h-[28px] relative shrink-0">
+              <Image src="/azul-logotipo.svg" alt="Goat Tips" fill className="object-contain" />
+            </div>
           </Link>
 
           <p className="text-[13px] text-(--text2) leading-[1.6] font-medium">
-            Probabilidades calibradas com dados históricos, modelo xG ao vivo e análise de padrões. Sem viés humano, sem achismo.
+            Probabilidades calibradas com dados históricos, modelo Expectativa de Gols ao vivo e análise de padrões. Sem viés humano, sem achismo.
           </p>
 
           <div className="flex items-center gap-2.5">

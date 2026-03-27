@@ -21,7 +21,7 @@ const NAV_LINKS = [
   { href: "/pre-jogo", label: "Pré-jogo", id: "prejogo" },
   { href: "/simulador", label: "Simulador", id: "simulador" },
   { href: "/analytics", label: "Analytics", id: "analytics" },
-  { href: "/tipster", label: "Tipster IA", id: "tipster" },
+  { href: "/tipster", label: "Goat AI", id: "tipster" },
 ];
 
 export function Navbar() {
@@ -36,22 +36,16 @@ export function Navbar() {
       >
         <Link
           href="/"
-          className="flex items-center gap-2.5 no-underline mr-8 shrink-0"
+          className="flex items-center no-underline mr-8 shrink-0"
         >
-          <div className="w-8 h-8 shrink-0 relative">
+          <div className="w-[150px] h-[30px] shrink-0 relative">
             <Image
-              src="/goat-tips-logo.svg"
+              src="/azul-logo-horizontal.svg"
               alt="Goat Tips"
               fill
               className="object-contain"
             />
           </div>
-          <span
-            className="text-[20px] uppercase tracking-[0.02em] text-(--text) leading-none"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            GOAT <span className="text-[#012AFE]">TIPS</span>
-          </span>
         </Link>
 
         <div className="pointer-events-none absolute inset-0 hidden items-center justify-center lg:flex">
@@ -94,21 +88,15 @@ export function Navbar() {
         style={{ background: "color-mix(in oklab, var(--nav-bg) 92%, transparent)" }}
       >
         <MobileNavHeader>
-          <Link href="/" className="flex items-center gap-2.5 no-underline shrink-0">
-            <div className="w-8 h-8 shrink-0 relative">
+          <Link href="/" className="flex items-center no-underline shrink-0">
+            <div className="w-[128px] h-[26px] shrink-0 relative">
               <Image
-                src="/goat-tips-logo.svg"
+                src="/azul-logo-horizontal.svg"
                 alt="Goat Tips"
                 fill
                 className="object-contain"
               />
             </div>
-            <span
-              className="text-[18px] uppercase tracking-[0.02em] text-(--text) leading-none"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              GOAT <span className="text-[#012AFE]">TIPS</span>
-            </span>
           </Link>
 
           <div className="flex items-center gap-2">
@@ -127,7 +115,7 @@ export function Navbar() {
         <MobileNavMenu
           isOpen={isMobileMenuOpen}
           onClose={() => setIsMobileMenuOpen(false)}
-          className="top-[68px] border border-border/60 bg-(--bg1)"
+          className="top-[68px] border border-border/60 bg-(--surface)"
         >
           {NAV_LINKS.map((link) => {
             const isActive = pathname === link.href;

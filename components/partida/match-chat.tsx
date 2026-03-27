@@ -102,7 +102,7 @@ export function MatchChat({ eventId }: MatchChatProps) {
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-full bg-[#012AFE] flex items-center justify-center">
             <div className="relative w-4 h-4">
-              <Image src="/goat-tips-logo.svg" alt="" fill className="object-contain brightness-0 invert" />
+              <Image src="/azul-simbolo.svg" alt="" fill className="object-contain brightness-0 invert" />
             </div>
           </div>
           <div>
@@ -156,7 +156,7 @@ export function MatchChat({ eventId }: MatchChatProps) {
             {msg.role === "ai" && (
               <div className="w-7 h-7 rounded-full bg-[#012AFE] flex items-center justify-center shrink-0 mt-0.5">
                 <div className="relative w-4 h-4">
-                  <Image src="/goat-tips-logo.svg" alt="" fill className="object-contain brightness-0 invert" />
+                  <Image src="/azul-simbolo.svg" alt="" fill className="object-contain brightness-0 invert" />
                 </div>
               </div>
             )}
@@ -178,7 +178,7 @@ export function MatchChat({ eventId }: MatchChatProps) {
           <div className="flex gap-2.5 items-start">
             <div className="w-7 h-7 rounded-full bg-[#012AFE] flex items-center justify-center shrink-0">
               <div className="relative w-4 h-4">
-                <Image src="/goat-tips-logo.svg" alt="" fill className="object-contain brightness-0 invert" />
+                <Image src="/azul-simbolo.svg" alt="" fill className="object-contain brightness-0 invert" />
               </div>
             </div>
             <div className="bg-(--bg2) border border-border rounded-[14px] rounded-bl-[4px] px-3.5 py-3">
