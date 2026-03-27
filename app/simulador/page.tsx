@@ -1,5 +1,18 @@
 "use client";
 
+import {
+  Settings2,
+  Shield,
+  ChevronDown,
+  Activity,
+  Cpu,
+  Cloud,
+  Target,
+  BarChart3,
+  TriangleAlert,
+  Info,
+} from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +30,12 @@ import {
   useSimulatorPrediction,
 } from "@/hooks/use-predictions";
 import type { Prediction } from "@/types/api";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
@@ -251,7 +270,7 @@ function FormField({
   );
 }
 
-function TeamSelectField({
+function TeamSelectFieldWithIcon({
   id,
   label,
   value,
@@ -268,21 +287,26 @@ function TeamSelectField({
 }) {
   return (
     <FormField label={label} error={error}>
-      <Select value={value || undefined} onValueChange={onChange}>
-        <SelectTrigger
-          id={id}
-          className="w-full h-11 bg-background/60 backdrop-blur-sm"
-        >
-          <SelectValue placeholder="Selecione..." />
-        </SelectTrigger>
-        <SelectContent>
-          {teams.map((t) => (
-            <SelectItem key={t.id} value={t.name}>
-              {t.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="relative flex items-center bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-lg p-1">
+        <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0">
+          <span className="text-slate-400 text-sm">🛡️</span>
+        </div>
+        <Select value={value || undefined} onValueChange={onChange}>
+          <SelectTrigger
+            id={id}
+            className="border-0 focus:ring-0 bg-transparent h-10 text-slate-900 dark:text-slate-100 text-xs"
+          >
+            <SelectValue placeholder="Selecione..." />
+          </SelectTrigger>
+          <SelectContent>
+            {teams.map((t) => (
+              <SelectItem key={t.id} value={t.name}>
+                {t.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
     </FormField>
   );
 }
@@ -325,107 +349,234 @@ function PreMatchForm({
   }
 
   return (
-    <motion.form
-      onSubmit={handleSubmit(onSubmit)}
-      variants={stagger}
-      initial="hidden"
-      animate="visible"
-      className="flex flex-col gap-4"
-    >
-      <motion.div variants={fadeUp} className="grid grid-cols-2 gap-3">
-        <TeamSelectField
-          id="home"
-          label="Time da casa"
-          value={homeValue}
-          onChange={setHome}
-          teams={allTeams}
-          error={errors.home?.message}
-        />
-        <TeamSelectField
-          id="away"
-          label="Time visitante"
-          value={awayValue}
-          onChange={setAway}
-          teams={allTeams.filter((t) => t.name !== homeValue)}
-          error={errors.away?.message}
-        />
-      </motion.div>
+    <TooltipProvider delayDuration={100}>
+      <motion.form
+        onSubmit={handleSubmit(onSubmit)}
+        variants={stagger}
+        initial="hidden"
+        animate="visible"
+        className="flex flex-col gap-6"
+      >
+        <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
+          <div className="group">
+            <label className="block text-[10px] text-muted-foreground uppercase font-bold mb-2 ml-1 tracking-tighter">
+              Time da Casa
+            </label>
+            <div
+              className={`relative flex items-center bg-muted/30 border ${errors.home ? "border-red-500" : "border-border/50"} rounded-lg p-1`}
+            >
+              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+                <Shield className="w-4 h-4 text-muted-foreground" />
+              </div>
+              <select
+                value={homeValue}
+                onChange={(e) => setHome(e.target.value)}
+                className="w-full bg-transparent border-0 focus:ring-0 text-foreground text-xs py-2 px-2 appearance-none cursor-pointer"
+              >
+                <option value="" disabled className="text-muted-foreground">
+                  Selecione
+                </option>
+                {allTeams.map((t) => (
+                  <option key={t.id} value={t.name}>
+                    {t.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="w-4 h-4 text-muted-foreground mr-2 pointer-events-none" />
+            </div>
+            {errors.home && (
+              <p className="text-[10px] text-red-500 mt-1 ml-1">
+                {errors.home.message}
+              </p>
+            )}
+          </div>
 
-      <motion.div variants={fadeUp}>
-        <FormField label="Árbitro (opcional)">
-          <Select
-            value={watch("referee") || NONE_VALUE}
-            onValueChange={(v) =>
-              setValue("referee", v === NONE_VALUE ? "" : v, {
-                shouldValidate: true,
-              })
-            }
-          >
-            <SelectTrigger className="w-full h-11 bg-background/60 backdrop-blur-sm">
-              <SelectValue placeholder="Nenhum" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={NONE_VALUE}>Nenhum</SelectItem>
+          <div className="group">
+            <label className="block text-[10px] text-muted-foreground uppercase font-bold mb-2 ml-1 tracking-tighter">
+              Time Visitante
+            </label>
+            <div
+              className={`relative flex items-center bg-muted/30 border ${errors.away ? "border-red-500" : "border-border/50"} rounded-lg p-1`}
+            >
+              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+                <Shield className="w-4 h-4 text-muted-foreground" />
+              </div>
+              <select
+                value={awayValue}
+                onChange={(e) => setAway(e.target.value)}
+                className="w-full bg-transparent border-0 focus:ring-0 text-foreground text-xs py-2 px-2 appearance-none cursor-pointer"
+              >
+                <option value="" disabled className="text-muted-foreground">
+                  Selecione
+                </option>
+                {allTeams
+                  .filter((t) => t.name !== homeValue)
+                  .map((t) => (
+                    <option key={t.id} value={t.name}>
+                      {t.name}
+                    </option>
+                  ))}
+              </select>
+              <ChevronDown className="w-4 h-4 text-muted-foreground mr-2 pointer-events-none" />
+            </div>
+            {errors.away && (
+              <p className="text-[10px] text-red-500 mt-1 ml-1">
+                {errors.away.message}
+              </p>
+            )}
+          </div>
+        </motion.div>
+
+        <motion.div variants={fadeUp} className="group">
+          <label className="flex items-center gap-1.5 text-[10px] text-muted-foreground uppercase font-bold mb-1 ml-1 tracking-tighter">
+            Árbitro (Opcional)
+            <Tooltip>
+              <TooltipTrigger type="button" tabIndex={-1}>
+                <Info className="w-3.5 h-3.5 text-muted-foreground/50 hover:text-primary transition-colors cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent side="top">
+                <p className="w-56 text-center text-xs text-slate-200">
+                  O árbitro escolhido pode influenciar em até{" "}
+                  <strong className="text-white">12%</strong> na precisão final
+                  do xG e nas métricas disciplinares (Pênaltis e Cartões).
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </label>
+          <div className="relative">
+            <select
+              {...register("referee")}
+              className="w-full bg-muted/30 border border-border/50 focus:border-primary focus:ring-0 text-foreground text-sm py-3 px-4 appearance-none rounded-lg cursor-pointer transition-colors"
+            >
+              <option value="" className="text-muted-foreground">
+                Nenhum
+              </option>
               {refereesData?.referees.map((r) => (
-                <SelectItem key={r} value={r}>
+                <option key={r} value={r}>
                   {r}
-                </SelectItem>
+                </option>
               ))}
-            </SelectContent>
-          </Select>
-        </FormField>
-      </motion.div>
+            </select>
+            <Activity className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground w-4 h-4" />
+          </div>
+        </motion.div>
 
-      <motion.div variants={fadeUp} className="grid grid-cols-2 gap-3">
-        <FormField label="Estádio">
-          <Input
-            placeholder="Ex: Emirates Stadium"
-            className="h-10 bg-background/60 backdrop-blur-sm"
-            {...register("stadium")}
-          />
-        </FormField>
-        <FormField label="Cidade">
-          <Input
-            placeholder="Ex: London"
-            className="h-10 bg-background/60 backdrop-blur-sm"
-            {...register("city")}
-          />
-        </FormField>
-      </motion.div>
+        <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
+          <div className="group">
+            <label className="flex items-center gap-1.5 text-[10px] text-muted-foreground uppercase font-bold mb-1 ml-1 tracking-tighter">
+              Estádio
+              <Tooltip>
+                <TooltipTrigger type="button" tabIndex={-1}>
+                  <Info className="w-3.5 h-3.5 text-muted-foreground/50 hover:text-primary transition-colors cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  <p className="w-56 text-center text-xs text-slate-200">
+                    Jogar no próprio estádio ativa o fator{" "}
+                    <em>Mando de Campo (Home Advantage)</em>, influenciando o
+                    favoritismo e as linhas de Over Gols.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </label>
+            <input
+              {...register("stadium")}
+              className="w-full bg-muted/30 border border-border/50 focus:border-primary focus:ring-0 text-foreground text-xs py-3 px-4 rounded-lg outline-none transition-colors"
+              placeholder="Ex: Villa Park"
+              type="text"
+            />
+          </div>
+          <div className="group">
+            <label className="flex items-center gap-1.5 text-[10px] text-muted-foreground uppercase font-bold mb-1 ml-1 tracking-tighter">
+              Cidade
+              <Tooltip>
+                <TooltipTrigger type="button" tabIndex={-1}>
+                  <Info className="w-3.5 h-3.5 text-muted-foreground/50 hover:text-primary transition-colors cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  <p className="w-56 text-center text-xs text-slate-200">
+                    A cidade nos ajuda a cruzar dados do clima em tempo real que
+                    afetam diretamente a performance da partida e probabilidade
+                    de gols.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </label>
+            <input
+              {...register("city")}
+              className="w-full bg-muted/30 border border-border/50 focus:border-primary focus:ring-0 text-foreground text-xs py-3 px-4 rounded-lg outline-none transition-colors"
+              placeholder="Ex: Birmingham"
+              type="text"
+            />
+          </div>
+        </motion.div>
 
-      <motion.div variants={fadeUp}>
-        <FormField
-          label="Horário UTC (0-23)"
-          error={errors.match_hour_utc?.message}
-        >
-          <Input
-            type="number"
-            min={0}
-            max={23}
-            placeholder="Ex: 15"
-            className="h-10 bg-background/60 backdrop-blur-sm"
-            {...register("match_hour_utc", { valueAsNumber: true })}
-          />
-        </FormField>
-      </motion.div>
+        <motion.div variants={fadeUp} className="group">
+          <label className="flex items-center gap-1.5 text-[10px] text-muted-foreground uppercase font-bold mb-1 ml-1 tracking-tighter">
+            Horário (UTC)
+            <Tooltip>
+              <TooltipTrigger type="button" tabIndex={-1}>
+                <Info className="w-3.5 h-3.5 text-muted-foreground/50 hover:text-primary transition-colors cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent side="top">
+                <p className="w-56 text-center text-xs text-slate-200">
+                  Partidas noturnas vs. diurnas ou diferenças de fuso horário
+                  podem impactar a intensidade do jogo e o desgaste físico da
+                  inteligência artificial.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </label>
+          <div className="relative">
+            <select
+              {...register("match_hour_utc", { valueAsNumber: true })}
+              className="w-full bg-muted/30 border border-border/50 focus:border-primary focus:ring-0 text-foreground text-xs py-3 px-4 appearance-none rounded-lg cursor-pointer transition-colors"
+            >
+              <option value="" className="text-muted-foreground">
+                Qualquer
+              </option>
+              {Array.from({ length: 24 }).map((_, i) => (
+                <option
+                  key={i}
+                  value={i}
+                >{`${i.toString().padStart(2, "0")}:00`}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground w-3 h-3" />
+          </div>
+        </motion.div>
 
-      <motion.div variants={fadeUp}>
-        <Button
-          type="submit"
-          size="lg"
-          className="w-full h-12 text-[14px] font-bold rounded-xl bg-primary hover:bg-primary/90 shadow-[0_4px_20px_rgba(1,42,254,0.3)] hover:shadow-[0_6px_28px_rgba(1,42,254,0.45)] transition-all duration-300"
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <span className="flex items-center gap-2">
-              <LoadingDots /> Simulando
-            </span>
-          ) : (
-            "Simular Partida"
-          )}
-        </Button>
-      </motion.div>
-    </motion.form>
+        <motion.div variants={fadeUp} className="mt-8 flex flex-col gap-3">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full py-4 bg-primary text-white font-black font-headline text-xl uppercase tracking-widest hover:brightness-110 active:scale-[0.98] transition-all rounded-lg shadow-lg shadow-primary/20 disabled:opacity-70 flex items-center justify-center gap-2"
+          >
+            {isLoading ? (
+              <span className="flex items-center gap-2">
+                <LoadingDots /> Simulando
+              </span>
+            ) : (
+              "Simular Partida"
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setValue("home", "");
+              setValue("away", "");
+              setValue("referee", "");
+              setValue("stadium", "");
+              setValue("city", "");
+              setValue("match_hour_utc", undefined);
+              onTeamsChange("", "");
+            }}
+            className="w-full py-2 bg-transparent text-muted-foreground font-bold text-[10px] uppercase tracking-widest hover:text-foreground transition-all border border-transparent hover:border-border rounded-lg"
+          >
+            Limpar Escolhas
+          </button>
+        </motion.div>
+      </motion.form>
+    </TooltipProvider>
   );
 }
 
@@ -484,22 +635,42 @@ function InplayForm({
       className="flex flex-col gap-4"
     >
       <motion.div variants={fadeUp} className="grid grid-cols-2 gap-3">
-        <TeamSelectField
-          id="home-ip"
-          label="Time da casa"
-          value={homeValue}
-          onChange={setHome}
-          teams={allTeams}
-          error={errors.home?.message}
-        />
-        <TeamSelectField
-          id="away-ip"
-          label="Time visitante"
-          value={awayValue}
-          onChange={setAway}
-          teams={allTeams.filter((t) => t.name !== homeValue)}
-          error={errors.away?.message}
-        />
+        <FormField label="Time da casa" error={errors.home?.message}>
+          <Select value={homeValue || undefined} onValueChange={setHome}>
+            <SelectTrigger
+              id="home-ip"
+              className="w-full h-11 bg-background/60 backdrop-blur-sm"
+            >
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              {allTeams.map((t) => (
+                <SelectItem key={t.id} value={t.name}>
+                  {t.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </FormField>
+        <FormField label="Time visitante" error={errors.away?.message}>
+          <Select value={awayValue || undefined} onValueChange={setAway}>
+            <SelectTrigger
+              id="away-ip"
+              className="w-full h-11 bg-background/60 backdrop-blur-sm"
+            >
+              <SelectValue placeholder="Selecione..." />
+            </SelectTrigger>
+            <SelectContent>
+              {allTeams
+                .filter((t) => t.name !== homeValue)
+                .map((t) => (
+                  <SelectItem key={t.id} value={t.name}>
+                    {t.name}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+        </FormField>
       </motion.div>
 
       <motion.div variants={fadeUp}>
@@ -1083,6 +1254,683 @@ function ResultsDashboard({
   );
 }
 
+export function PreMatchResultsDashboard({
+  prediction,
+  isInplay,
+  teamMap,
+}: {
+  prediction: Prediction;
+  isInplay: boolean;
+  teamMap: Map<string, TeamInfo>;
+}) {
+  const homeTeam = teamMap.get(prediction.home_team) ?? null;
+  const awayTeam = teamMap.get(prediction.away_team) ?? null;
+  const homeProb = prediction.home_win_prob;
+  const drawProb = prediction.draw_prob;
+  const awayProb = prediction.away_win_prob;
+
+  return (
+    <motion.div
+      className="w-full space-y-8"
+      variants={stagger}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Section 1: Confronto */}
+      <motion.div
+        variants={fadeUp}
+        className="bg-card rounded-2xl border border-border overflow-hidden shadow-clinical p-8 relative"
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,var(--primary)_0%,transparent_60%)] opacity-[0.03] dark:opacity-[0.06]" />
+
+        <div className="flex flex-col items-center gap-1 mb-8 relative">
+          <div className="flex items-center gap-2">
+            <Target className="w-5 h-5 text-muted-foreground" />
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+              Premier League
+            </span>
+          </div>
+        </div>
+        <div className="flex justify-between items-center px-8 relative mb-10">
+          <div className="flex flex-col items-center gap-3 w-32">
+            <div className="w-24 h-24 rounded-full bg-card border border-border flex items-center justify-center shadow-sm overflow-hidden text-muted-foreground/40">
+              {homeTeam?.image_url ? (
+                <img
+                  src={homeTeam.image_url}
+                  alt={prediction.home_team}
+                  className="w-16 h-16 object-contain"
+                />
+              ) : (
+                <Shield className="w-10 h-10" />
+              )}
+            </div>
+            <div className="text-center">
+              <h3 className="font-headline text-sm font-black uppercase tracking-tight text-foreground">
+                {prediction.home_team}
+              </h3>
+              <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest">
+                Casa
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <div className="text-2xl font-headline font-black text-foreground tracking-widest">
+              {prediction.most_likely_score.replace("-", " - ")}
+            </div>
+            <div className="text-[8px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+              Mais Provável
+            </div>
+          </div>
+          <div className="flex flex-col items-center gap-3 w-32">
+            <div className="w-24 h-24 rounded-full bg-card border border-border flex items-center justify-center shadow-sm overflow-hidden text-muted-foreground/40">
+              {awayTeam?.image_url ? (
+                <img
+                  src={awayTeam.image_url}
+                  alt={prediction.away_team}
+                  className="w-16 h-16 object-contain"
+                />
+              ) : (
+                <Shield className="w-10 h-10" />
+              )}
+            </div>
+            <div className="text-center">
+              <h3 className="font-headline text-sm font-black uppercase tracking-tight text-foreground">
+                {prediction.away_team}
+              </h3>
+              <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest">
+                Visitante
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="px-4 space-y-2 relative">
+          <div className="flex justify-between text-[10px] font-black">
+            <span className="text-primary">{Math.round(homeProb * 100)}%</span>
+            <span className="text-muted-foreground">
+              {Math.round(drawProb * 100)}%
+            </span>
+            <span className="text-red-500">{Math.round(awayProb * 100)}%</span>
+          </div>
+          <div className="flex h-2 w-full rounded-full overflow-hidden">
+            <div
+              className="bg-primary h-full"
+              style={{ width: `${homeProb * 100}%` }}
+            ></div>
+            <div
+              className="bg-muted-foreground/30 h-full border-x border-background"
+              style={{ width: `${drawProb * 100}%` }}
+            ></div>
+            <div
+              className="bg-red-500 h-full"
+              style={{ width: `${awayProb * 100}%` }}
+            ></div>
+          </div>
+          <div className="flex justify-between text-[8px] font-bold uppercase tracking-tight text-muted-foreground">
+            <span>{prediction.home_team.slice(0, 10)}</span>
+            <span>Empate</span>
+            <span>{prediction.away_team.slice(0, 10)}</span>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Section 2: Odds Possíveis */}
+      <motion.div
+        variants={stagger}
+        className="grid grid-cols-2 md:grid-cols-4 gap-4"
+      >
+        <motion.div
+          variants={fadeUp}
+          className="bg-card p-6 rounded-2xl border border-border shadow-sm flex flex-col items-center text-center"
+        >
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-3">
+            XG CASA
+          </span>
+          <div className="text-4xl font-headline font-black text-primary mb-1">
+            {prediction.lambda_home.toFixed(2)}
+          </div>
+          <span className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest text-nowrap">
+            {prediction.home_team.slice(0, 10)}
+          </span>
+        </motion.div>
+        <motion.div
+          variants={fadeUp}
+          className="bg-card p-6 rounded-2xl border border-border shadow-sm flex flex-col items-center text-center"
+        >
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-3">
+            XG FORA
+          </span>
+          <div className="text-4xl font-headline font-black text-red-500 mb-1">
+            {prediction.lambda_away.toFixed(2)}
+          </div>
+          <span className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest text-nowrap">
+            {prediction.away_team.slice(0, 10)}
+          </span>
+        </motion.div>
+        <motion.div
+          variants={fadeUp}
+          className="bg-card p-6 rounded-2xl border border-border shadow-sm flex flex-col items-center text-center"
+        >
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-3">
+            OVER 2.5
+          </span>
+          <div className="text-4xl font-headline font-black text-foreground mb-1">
+            {Math.round(prediction.over_2_5_prob * 100)}%
+          </div>
+          <div className="w-12 h-0.5 bg-foreground rounded-full mt-2"></div>
+        </motion.div>
+        <motion.div
+          variants={fadeUp}
+          className="bg-card p-6 rounded-2xl border border-border shadow-sm flex flex-col items-center text-center"
+        >
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-3">
+            BTTS
+          </span>
+          <div className="text-4xl font-headline font-black text-foreground mb-1">
+            {Math.round(prediction.btts_prob * 100)}%
+          </div>
+          <div className="w-12 h-0.5 bg-foreground rounded-full mt-2"></div>
+        </motion.div>
+      </motion.div>
+
+      {/* Section 3: Placares Mais Prováveis */}
+      <motion.div
+        variants={fadeUp}
+        className="bg-card p-6 rounded-xl border border-border shadow-sm"
+      >
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-[10px] font-bold uppercase tracking-widest text-foreground">
+            Placares mais prováveis
+          </h3>
+          <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-widest">
+            Top {Math.min(prediction.top_scores.length, 5)} Resultados
+          </span>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {prediction.top_scores.slice(0, 5).map(([score, prob], i) => (
+            <div
+              key={score}
+              className={`border rounded-xl p-5 text-center relative ${i === 0 ? "bg-primary/5 border-primary/20 ring-1 ring-primary/10 overflow-hidden" : "bg-muted/30 dark:bg-slate-900 border-border"}`}
+            >
+              {i === 0 && (
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 text-[8px] font-black bg-primary text-white px-3 py-0.5 rounded-b uppercase tracking-tighter">
+                  Top
+                </span>
+              )}
+              <div
+                className={`text-2xl font-headline font-black ${i === 0 ? "text-primary mt-2" : "text-foreground"}`}
+              >
+                {score}
+              </div>
+              <div className="text-[11px] text-muted-foreground font-bold uppercase mt-1">
+                {(prob * 100).toFixed(1)}%
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Section 4: Matriz de Probabilidade */}
+      {prediction.score_matrix && prediction.score_matrix.length > 0 && (
+        <motion.div
+          variants={fadeUp}
+          className="bg-card p-8 rounded-xl border border-border shadow-clinical overflow-hidden"
+        >
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-foreground mb-1">
+                Matriz de Probabilidade
+              </h3>
+              <p className="text-[10px] text-muted-foreground font-medium">
+                Cores mais intensas indicam maior probabilidade estatística para
+                o placar correspondente.
+              </p>
+            </div>
+            <div className="flex items-center gap-4 text-[10px] text-muted-foreground uppercase font-black tracking-widest">
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-sm bg-muted/50 border border-border"></span>
+                Baixa
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-sm bg-primary"></span> Alta
+              </div>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs font-bold border-separate border-spacing-1.5">
+              <thead>
+                <tr>
+                  <th className="p-2 text-muted-foreground/60 italic font-medium">
+                    {prediction.home_team.slice(0, 3).toUpperCase()} \{" "}
+                    {prediction.away_team.slice(0, 3).toUpperCase()}
+                  </th>
+                  {prediction.score_matrix[0]?.slice(0, 6).map((_, j) => (
+                    <th key={j} className="p-2 text-foreground">
+                      {j}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="text-center">
+                {prediction.score_matrix.slice(0, 6).map((row, i) => (
+                  <tr key={i}>
+                    <td className="p-2 text-foreground">{i}</td>
+                    {row.slice(0, 6).map((val, j) => {
+                      const probPercentage = val * 100;
+                      let bgClass = "bg-muted/10 text-muted-foreground/60";
+                      if (probPercentage >= 10)
+                        bgClass =
+                          "bg-primary text-white shadow-lg shadow-primary/20 ring-2 ring-primary";
+                      else if (probPercentage >= 7)
+                        bgClass = "bg-[rgba(1,42,254,0.8)] text-white";
+                      else if (probPercentage >= 5)
+                        bgClass = "bg-[rgba(1,42,254,0.6)] text-white";
+                      else if (probPercentage >= 3)
+                        bgClass = "bg-[rgba(1,42,254,0.4)] text-foreground";
+                      else if (probPercentage >= 1.5)
+                        bgClass =
+                          "bg-[rgba(1,42,254,0.15)] text-muted-foreground";
+                      else if (probPercentage > 0.4)
+                        bgClass =
+                          "bg-[rgba(1,42,254,0.08)] text-muted-foreground";
+
+                      return (
+                        <td
+                          key={j}
+                          className={`p-3 rounded-lg matrix-cell ${bgClass} transition-all duration-200 hover:scale-105 hover:z-10`}
+                        >
+                          {probPercentage > 0
+                            ? probPercentage.toFixed(1)
+                            : "0.0"}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Section 5: Previsão 1° Tempo & Infos */}
+      <motion.div
+        variants={stagger}
+        className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+      >
+        {/* Left Column: Previsão 1° Tempo */}
+        {prediction.half_time && (
+          <motion.div
+            variants={fadeUp}
+            className="bg-card p-6 rounded-xl border border-border shadow-sm"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-foreground">
+                Previsão 1º Tempo
+              </h3>
+              <span className="text-[9px] text-primary font-bold bg-primary/10 px-2 py-0.5 rounded border border-primary/20 uppercase">
+                Half-Time
+              </span>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              {/* Card: Casa */}
+              <div className="bg-muted/40 rounded-xl p-4 flex flex-col items-center justify-center text-center">
+                <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-tighter mb-1 truncate max-w-full">
+                  {prediction.home_team.slice(0, 3)}
+                </span>
+                <span className="text-xl font-headline font-black text-primary">
+                  {Math.round(prediction.half_time.home_win_prob * 100)}%
+                </span>
+              </div>
+              {/* Card: Empate */}
+              <div className="bg-muted/40 rounded-xl p-4 flex flex-col items-center justify-center text-center">
+                <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-tighter mb-1">
+                  EMP
+                </span>
+                <span className="text-xl font-headline font-black text-muted-foreground">
+                  {Math.round(prediction.half_time.draw_prob * 100)}%
+                </span>
+              </div>
+              {/* Card: Fora */}
+              <div className="bg-muted/40 rounded-xl p-4 flex flex-col items-center justify-center text-center">
+                <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-tighter mb-1 truncate max-w-full">
+                  {prediction.away_team.slice(0, 3)}
+                </span>
+                <span className="text-xl font-headline font-black text-red-500">
+                  {Math.round(prediction.half_time.away_win_prob * 100)}%
+                </span>
+              </div>
+              {/* Card: Over 0.5 */}
+              <div className="bg-muted/40 rounded-xl p-4 flex flex-col items-center justify-center text-center">
+                <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-tighter mb-1">
+                  Over 0.5
+                </span>
+                <span className="text-xl font-headline font-black text-foreground">
+                  {Math.round(prediction.half_time.over_0_5_prob * 100)}%
+                </span>
+              </div>
+              {/* Card: Over 1.5 */}
+              <div className="bg-muted/40 rounded-xl p-4 flex flex-col items-center justify-center text-center">
+                <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-tighter mb-1">
+                  Over 1.5
+                </span>
+                <span className="text-xl font-headline font-black text-foreground">
+                  {Math.round((prediction.half_time.over_1_5_prob ?? 0) * 100)}%
+                </span>
+              </div>
+              {/* Card: Placar HT */}
+              <div className="bg-muted/40 rounded-xl p-4 flex flex-col items-center justify-center text-center">
+                <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-tighter mb-1">
+                  Placar HT
+                </span>
+                <span className="text-xl font-headline font-black text-primary">
+                  {prediction.half_time.most_likely_score}
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        <motion.div
+          variants={fadeUp}
+          className="bg-card p-6 rounded-xl border border-border shadow-sm flex flex-col gap-3"
+        >
+          <div className="text-[11px] uppercase tracking-widest text-foreground font-bold">
+            Informações Adicionais
+          </div>
+          {prediction.weather_condition && (
+            <div className="flex items-center gap-2 text-[12px] text-muted-foreground bg-muted/40 border border-border/50 rounded-lg px-3 py-2">
+              <Cloud className="w-4 h-4 text-muted-foreground" />
+              <span className="font-semibold text-foreground">
+                {prediction.weather_condition}
+              </span>
+              {prediction.weather_factor !== undefined &&
+                prediction.weather_factor < 1 && (
+                  <span className="text-[10px] text-amber-500 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-md font-semibold ml-auto border border-amber-500/20">
+                    -{((1 - prediction.weather_factor) * 100).toFixed(0)}% gols
+                  </span>
+                )}
+            </div>
+          )}
+          <div className="flex items-center gap-2 bg-muted/40 border border-border/50 rounded-lg px-3 py-2">
+            <span className="text-[11px] text-muted-foreground font-semibold">
+              Confiança do Modelo
+            </span>
+            <span
+              className="text-[11px] font-bold px-2.5 py-0.5 rounded-md ml-auto"
+              style={{
+                background:
+                  prediction.confidence === "Alta"
+                    ? "rgba(0,255,100,0.1)"
+                    : prediction.confidence === "Média"
+                      ? "rgba(255,184,0,0.1)"
+                      : "rgba(255,59,59,0.1)",
+                color:
+                  prediction.confidence === "Alta"
+                    ? "#00C896"
+                    : prediction.confidence === "Média"
+                      ? "#FFB800"
+                      : "#FF3B3B",
+                borderColor:
+                  prediction.confidence === "Alta"
+                    ? "rgba(0,255,100,0.2)"
+                    : prediction.confidence === "Média"
+                      ? "rgba(255,184,0,0.2)"
+                      : "rgba(255,59,59,0.2)",
+                borderWidth: "1px",
+              }}
+            >
+              {prediction.confidence}
+            </span>
+          </div>
+          {prediction.model_note && (
+            <div className="text-[11px] text-muted-foreground italic bg-muted/40 border border-border/50 rounded-lg px-3 py-2">
+              {prediction.model_note}
+            </div>
+          )}
+        </motion.div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+const SidebarWidgets = ({ confidenceValue }: { confidenceValue: number }) => (
+  <>
+    <motion.div
+      variants={fadeUp}
+      className="bg-card p-5 rounded-xl border border-border shadow-sm space-y-4"
+    >
+      <div className="space-y-2">
+        <div className="flex justify-between items-center text-[10px] uppercase font-bold tracking-tighter">
+          <span className="text-muted-foreground">Confidence Interval</span>
+          <span className="text-primary">{confidenceValue.toFixed(1)}%</span>
+        </div>
+        <div className="w-full bg-muted h-1.5 rounded-full overflow-hidden">
+          <motion.div
+            className="bg-primary h-full"
+            initial={{ width: 0 }}
+            animate={{ width: `${confidenceValue}%` }}
+            transition={{ duration: 1, ease: "easeOut" }}
+          />
+        </div>
+      </div>
+    </motion.div>
+
+    <motion.div
+      variants={fadeUp}
+      className="bg-card dark:bg-slate-950 text-foreground p-6 rounded-xl border border-border shadow-sm flex flex-col justify-between"
+    >
+      <div>
+        <div className="flex items-center gap-2 mb-6">
+          <Cpu className="w-5 h-5 text-primary" />
+          <h3 className="text-[10px] font-bold uppercase tracking-widest text-primary">
+            Status da Engine IA
+          </h3>
+        </div>
+        <div className="space-y-4">
+          <div className="flex justify-between items-center py-2 border-b border-border/50">
+            <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">
+              Confiança Simulação
+            </span>
+            <span className="text-xs font-headline font-black text-green-500 uppercase">
+              Alta
+            </span>
+          </div>
+          <div className="flex justify-between items-center py-2 border-b border-border/50">
+            <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">
+              Versão do Modelo
+            </span>
+            <span className="text-xs font-mono font-medium text-foreground">
+              Goat-V4.2.Alpha
+            </span>
+          </div>
+          <div className="flex justify-between items-center py-2">
+            <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">
+              Dataset Last Update
+            </span>
+            <span className="text-xs font-mono font-medium text-foreground">
+              03.12.2024
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className="mt-6 flex items-center gap-3">
+        <motion.span
+          className="w-2 h-2 rounded-full bg-green-500"
+          animate={{ opacity: [1, 0.3, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
+        <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
+          Engine Status: Real-Time Active
+        </span>
+      </div>
+    </motion.div>
+  </>
+);
+
+function PreMatchView({
+  onTeamsChange,
+  homeTeamInfo,
+  awayTeamInfo,
+  isLoading,
+  prediction,
+  error,
+  teamMap,
+  onSubmit,
+}: {
+  onTeamsChange: (home: string, away: string) => void;
+  homeTeamInfo: TeamInfo | null;
+  awayTeamInfo: TeamInfo | null;
+  isLoading: boolean;
+  prediction: Prediction | undefined;
+  error: Error | null;
+  teamMap: Map<string, TeamInfo>;
+  onSubmit: (data: PreMatchValues) => void;
+}) {
+  const [confidenceValue] = useState(98.4);
+
+  return (
+    <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+      {/* Left Sidebar: Controls */}
+      <motion.div
+        className="xl:col-span-4 space-y-6"
+        variants={stagger}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div
+          variants={fadeUp}
+          className="bg-card p-6 rounded-xl border border-border shadow-clinical"
+        >
+          <div className="flex items-center gap-2 mb-8">
+            <Settings2 className="w-5 h-5 text-primary" />
+            <h2 className="text-xs font-bold uppercase tracking-widest text-foreground">
+              Parâmetros de Entrada
+            </h2>
+          </div>
+          <PreMatchForm
+            onSubmit={onSubmit}
+            isLoading={isLoading}
+            onTeamsChange={onTeamsChange}
+          />
+        </motion.div>
+
+        {/* Desktop Widgets */}
+        <div className="hidden xl:flex flex-col space-y-6">
+          <SidebarWidgets confidenceValue={confidenceValue} />
+        </div>
+      </motion.div>
+
+      {/* Right Content: Simulation Results */}
+      <div className="xl:col-span-8 flex flex-col gap-8">
+        {prediction ? (
+          <PreMatchResultsDashboard
+            prediction={prediction}
+            isInplay={false}
+            teamMap={teamMap}
+          />
+        ) : (
+          <AnimatePresence mode="wait">
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              exit={{ opacity: 0 }}
+            >
+              {!isLoading && !error && (
+                <div className="bg-card border border-border rounded-2xl p-12 text-center flex flex-col items-center justify-center min-h-[350px] relative overflow-hidden shadow-sm">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,var(--primary)_0%,transparent_70%)] opacity-[0.02] dark:opacity-[0.04]" />
+                  <BarChart3 className="w-12 h-12 text-muted-foreground/30 mb-4" />
+                  <div
+                    className="text-[18px] text-foreground font-bold mb-2 relative"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    Monte seu cenário
+                  </div>
+                  <div className="text-[13px] text-muted-foreground max-w-xs leading-relaxed relative">
+                    Selecione os times e veja as probabilidades calculadas pelo
+                    modelo Poisson.
+                  </div>
+                </div>
+              )}
+
+              {isLoading && (
+                <motion.div
+                  key="loading"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="bg-card border border-border rounded-2xl p-12 text-center flex flex-col items-center justify-center min-h-[350px] relative overflow-hidden shadow-sm"
+                >
+                  <div className="relative mb-6">
+                    <motion.div
+                      className="w-16 h-16 rounded-full border-2 border-primary/20"
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                    />
+                    <motion.div
+                      className="absolute inset-0 w-16 h-16 rounded-full border-t-2 border-primary"
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                    />
+                  </div>
+                  <div
+                    className="text-[15px] text-foreground font-bold mb-1"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    Processando modelo
+                  </div>
+                  <div className="text-[12px] text-muted-foreground">
+                    Calculando distribuição Poisson...
+                  </div>
+                </motion.div>
+              )}
+
+              {error && !prediction && (
+                <motion.div
+                  key="error"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="bg-card border border-destructive/30 rounded-2xl p-8"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-destructive/10 flex items-center justify-center shrink-0">
+                      <TriangleAlert className="text-destructive w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="text-[14px] font-bold text-destructive mb-1">
+                        Erro na simulação
+                      </div>
+                      <div className="text-[13px] text-muted-foreground">
+                        {error.message ??
+                          "Ocorreu um erro inesperado. Tente novamente."}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        )}
+
+        {/* Mobile Widgets - at the very bottom */}
+        <div className="xl:hidden flex flex-col space-y-6 w-full">
+          <SidebarWidgets confidenceValue={confidenceValue} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function SimuladorPage() {
   const [mode, setMode] = useState<"pre-match" | "inplay">("pre-match");
   const [selectedTeams, setSelectedTeams] = useState<{
@@ -1098,11 +1946,9 @@ export default function SimuladorPage() {
 
   const teamMap = useMemo(() => {
     const map = new Map<string, TeamInfo>();
-    // Primeiro popula com os times do analytics (garante que todos existam)
     teamsData?.teams.forEach((t) =>
       map.set(t.name, { id: t.id, name: t.name }),
     );
-    // Enriquece com image_url real vinda das partidas
     const allMatches = [...(liveMatches ?? []), ...(upcomingMatches ?? [])];
     allMatches.forEach((m) => {
       if (m.home.image_url) {
@@ -1164,7 +2010,7 @@ export default function SimuladorPage() {
   }
 
   return (
-    <div className="relative px-6 py-8 max-w-[1280px] mx-auto">
+    <div className="relative px-6 py-8 max-w-7xl mx-auto">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-primary/3 dark:bg-primary/6 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Header */}
@@ -1243,182 +2089,184 @@ export default function SimuladorPage() {
         />
       </div>
 
-      {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6 relative">
-        {/* Form */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
-          className="relative"
-        >
-          <div className="sticky top-24 bg-card border border-border rounded-2xl p-5 shadow-sm overflow-hidden">
-            <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/3 dark:bg-primary/6 rounded-full blur-3xl pointer-events-none" />
-            <div className="relative">
+      {/* Main Content - Mode Switching */}
+      <AnimatePresence mode="wait">
+        {mode === "pre-match" ? (
+          <motion.div
+            key="pre-match-view"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            <PreMatchView
+              onTeamsChange={handleTeamsChange}
+              homeTeamInfo={homeTeamInfo}
+              awayTeamInfo={awayTeamInfo}
+              isLoading={isLoading}
+              prediction={prediction}
+              error={error}
+              teamMap={teamMap}
+              onSubmit={handlePreMatchSubmit}
+            />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="inplay-view"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6 relative"
+          >
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="relative"
+            >
+              <div className="sticky top-24 bg-card border border-border rounded-2xl p-5 shadow-sm overflow-hidden">
+                <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/3 dark:bg-primary/6 rounded-full blur-3xl pointer-events-none" />
+                <div className="relative">
+                  <InplayForm
+                    onSubmit={handleInplaySubmit}
+                    isLoading={inplayMutation.isPending}
+                    onTeamsChange={handleTeamsChange}
+                  />
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
               <AnimatePresence mode="wait">
-                {mode === "pre-match" ? (
+                {!prediction && !isLoading && !error && (
                   <motion.div
-                    key="pre-match"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 10 }}
-                    transition={{ duration: 0.25 }}
+                    key="empty"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="bg-card border border-border rounded-2xl p-12 text-center flex flex-col items-center justify-center min-h-[350px] relative overflow-hidden"
                   >
-                    <PreMatchForm
-                      onSubmit={handlePreMatchSubmit}
-                      isLoading={preMatchMutation.isPending}
-                      onTeamsChange={handleTeamsChange}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,var(--primary)_0%,transparent_70%)] opacity-[0.02] dark:opacity-[0.04]" />
+                    <Image
+                      src="/premier-complete-logo.png"
+                      alt="Premier League"
+                      width={48}
+                      height={48}
+                      className="opacity-10 mb-4 dark:brightness-[3] dark:contrast-75"
                     />
+                    <div
+                      className="text-[18px] text-foreground font-bold mb-2 relative"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      Monte seu cenário
+                    </div>
+                    <div className="text-[13px] text-muted-foreground max-w-xs leading-relaxed relative">
+                      Selecione os times e veja as probabilidades calculadas
+                      pelo modelo Poisson.
+                    </div>
                   </motion.div>
-                ) : (
+                )}
+
+                {isLoading && (
                   <motion.div
-                    key="inplay"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 10 }}
-                    transition={{ duration: 0.25 }}
+                    key="loading"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="bg-card border border-border rounded-2xl p-12 text-center flex flex-col items-center justify-center min-h-[350px] relative overflow-hidden"
                   >
-                    <InplayForm
-                      onSubmit={handleInplaySubmit}
-                      isLoading={inplayMutation.isPending}
-                      onTeamsChange={handleTeamsChange}
+                    <div className="relative mb-6">
+                      <motion.div
+                        className="w-16 h-16 rounded-full border-2 border-primary/20"
+                        animate={{ rotate: 360 }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
+                      />
+                      <motion.div
+                        className="absolute inset-0 w-16 h-16 rounded-full border-t-2 border-primary"
+                        animate={{ rotate: 360 }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Image
+                          src="/premier-logo.png"
+                          alt=""
+                          width={24}
+                          height={24}
+                          className="opacity-40"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      className="text-[15px] text-foreground font-bold mb-1"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      Processando modelo
+                    </div>
+                    <div className="text-[12px] text-muted-foreground">
+                      Calculando distribuição Poisson...
+                    </div>
+                  </motion.div>
+                )}
+
+                {error && !prediction && (
+                  <motion.div
+                    key="error"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="bg-card border border-destructive/30 rounded-2xl p-8"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-destructive/10 flex items-center justify-center shrink-0">
+                        <span className="text-destructive text-lg font-bold">
+                          !
+                        </span>
+                      </div>
+                      <div>
+                        <div className="text-[14px] font-bold text-destructive mb-1">
+                          Erro na simulação
+                        </div>
+                        <div className="text-[13px] text-muted-foreground">
+                          {error.message ??
+                            "Ocorreu um erro inesperado. Tente novamente."}
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {prediction && (
+                  <motion.div
+                    key="results"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <ResultsDashboard
+                      prediction={prediction}
+                      isInplay={true}
+                      teamMap={teamMap}
                     />
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Results */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <AnimatePresence mode="wait">
-            {!prediction && !isLoading && !error && (
-              <motion.div
-                key="empty"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-card border border-border rounded-2xl p-12 text-center flex flex-col items-center justify-center min-h-[350px] relative overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,var(--primary)_0%,transparent_70%)] opacity-[0.02] dark:opacity-[0.04]" />
-                <Image
-                  src="/premier-complete-logo.png"
-                  alt="Premier League"
-                  width={48}
-                  height={48}
-                  className="opacity-10 mb-4 dark:brightness-[3] dark:contrast-75"
-                />
-                <div
-                  className="text-[18px] text-foreground font-bold mb-2 relative"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  Monte seu cenário
-                </div>
-                <div className="text-[13px] text-muted-foreground max-w-xs leading-relaxed relative">
-                  Selecione os times e veja as probabilidades calculadas pelo
-                  modelo Poisson.
-                </div>
-              </motion.div>
-            )}
-
-            {isLoading && (
-              <motion.div
-                key="loading"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-card border border-border rounded-2xl p-12 text-center flex flex-col items-center justify-center min-h-[350px] relative overflow-hidden"
-              >
-                <div className="relative mb-6">
-                  <motion.div
-                    className="w-16 h-16 rounded-full border-2 border-primary/20"
-                    animate={{ rotate: 360 }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                  />
-                  <motion.div
-                    className="absolute inset-0 w-16 h-16 rounded-full border-t-2 border-primary"
-                    animate={{ rotate: 360 }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Image
-                      src="/premier-logo.png"
-                      alt=""
-                      width={24}
-                      height={24}
-                      className="opacity-40"
-                    />
-                  </div>
-                </div>
-                <div
-                  className="text-[15px] text-foreground font-bold mb-1"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  Processando modelo
-                </div>
-                <div className="text-[12px] text-muted-foreground">
-                  Calculando distribuição Poisson...
-                </div>
-              </motion.div>
-            )}
-
-            {error && !prediction && (
-              <motion.div
-                key="error"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-card border border-destructive/30 rounded-2xl p-8"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-destructive/10 flex items-center justify-center shrink-0">
-                    <span className="text-destructive text-lg font-bold">
-                      !
-                    </span>
-                  </div>
-                  <div>
-                    <div className="text-[14px] font-bold text-destructive mb-1">
-                      Erro na simulação
-                    </div>
-                    <div className="text-[13px] text-muted-foreground">
-                      {error.message ??
-                        "Ocorreu um erro inesperado. Tente novamente."}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {prediction && (
-              <motion.div
-                key="results"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                <ResultsDashboard
-                  prediction={prediction}
-                  isInplay={mode === "inplay"}
-                  teamMap={teamMap}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-      </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -1,20 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import { useUpcomingMatches } from "@/hooks/use-matches";
 import { UpcomingCard } from "@/components/prejogo/upcoming-card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useUpcomingMatches } from "@/hooks/use-matches";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 export default function PreJogoPage() {
   const { data: matches, isLoading } = useUpcomingMatches();
   const [activeFilter, setActiveFilter] = useState("all");
   const [visibleCount, setVisibleCount] = useState(10);
-  
-  const filteredMatches = matches?.filter(() => {
-    if (activeFilter === "all" || activeFilter === "pl") return true;
-    return false;
-  }) || [];
+
+  const filteredMatches =
+    matches?.filter(() => {
+      if (activeFilter === "all" || activeFilter === "pl") return true;
+      return false;
+    }) || [];
 
   const visibleMatches = filteredMatches.slice(0, visibleCount);
 
@@ -31,8 +32,9 @@ export default function PreJogoPage() {
               Próximos Jogos
             </h1>
             <p className="text-(--text2) max-w-xl text-xs sm:text-sm leading-relaxed border-l-2 border-[var(--primary)] pl-3 sm:pl-4 font-medium">
-              Análises orientadas por algoritmos. Modelos matemáticos identificando vantagens 
-              nos mercados globais de futebol baseados em sinais de distribuição de Poisson.
+              Análises orientadas por algoritmos. Modelos matemáticos
+              identificando vantagens nos mercados globais de futebol baseados
+              em sinais de distribuição de Poisson.
             </p>
           </div>
           <div className="flex gap-2">
@@ -44,7 +46,7 @@ export default function PreJogoPage() {
                 className="text-[var(--primary)] font-bold text-xl uppercase tracking-[-0.02em]"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                {isLoading ? "..." : (matches?.length || 0)} Ativos
+                {isLoading ? "..." : matches?.length || 0} Ativos
               </span>
             </div>
           </div>
@@ -80,7 +82,7 @@ export default function PreJogoPage() {
               <Skeleton key={i} className="h-[140px] w-full rounded-[14px]" />
             ))
           ) : !filteredMatches || filteredMatches.length === 0 ? (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="mt-16 text-center py-12"
@@ -112,7 +114,7 @@ export default function PreJogoPage() {
               ))}
 
               {filteredMatches && visibleCount < filteredMatches.length && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   className="flex justify-center mt-6"
@@ -131,7 +133,7 @@ export default function PreJogoPage() {
 
         {/* Bento Analysis Module */}
         {!isLoading && matches && matches.length > 0 && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
@@ -139,23 +141,24 @@ export default function PreJogoPage() {
           >
             <div className="md:col-span-2 bg-(--card2) border border-(--border) p-6 sm:p-8 rounded-xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-[var(--primary)] opacity-5 rounded-full blur-[80px] sm:blur-[100px] -mr-24 sm:-mr-32 -mt-24 sm:-mt-32"></div>
-              <h3 
+              <h3
                 className="text-2xl sm:text-3xl mb-4 text-(--text) uppercase tracking-[-0.02em]"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 Análise Algorítmica
               </h3>
               <p className="text-(--text2) text-sm leading-relaxed mb-6 font-medium">
-                Nosso modelo Poisson calcula probabilidades baseado na força de ataque atual
-                versus resistência de defesa, ajustada taticamente. Atualmente visualizando tendências
-                de Over 2.5 gols na próxima rodada da Premier League.
+                Nosso modelo Poisson calcula probabilidades baseado na força de
+                ataque atual versus resistência de defesa, ajustada taticamente.
+                Atualmente visualizando tendências de Over 2.5 gols na próxima
+                rodada da Premier League.
               </p>
               <div className="flex gap-4">
                 <div className="bg-(--bg3) px-6 py-4 rounded-lg flex-1 border border-(--border2)">
                   <span className="block text-[10px] uppercase text-(--text2) tracking-widest mb-1 font-bold">
                     Confiança do Modelo
                   </span>
-                  <span 
+                  <span
                     className="text-3xl font-bold text-[var(--primary)] uppercase tracking-[-0.02em]"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
@@ -166,7 +169,7 @@ export default function PreJogoPage() {
                   <span className="block text-[10px] uppercase text-(--text2) tracking-widest mb-1 font-bold">
                     Fator de Assimetria
                   </span>
-                  <span 
+                  <span
                     className="text-3xl font-bold text-[var(--primary)] uppercase tracking-[-0.02em]"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
@@ -177,9 +180,16 @@ export default function PreJogoPage() {
             </div>
 
             <div className="bg-[var(--primary)] p-8 rounded-xl flex flex-col justify-between shadow-2xl relative overflow-hidden">
-              <div className="absolute inset-0 bg-white/5 opacity-50 pointer-events-none" style={{ backgroundSize: '10px 10px', backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)' }}></div>
+              <div
+                className="absolute inset-0 bg-white/5 opacity-50 pointer-events-none"
+                style={{
+                  backgroundSize: "10px 10px",
+                  backgroundImage:
+                    "radial-gradient(circle, #ffffff 1px, transparent 1px)",
+                }}
+              ></div>
               <div className="relative z-10">
-                <h3 
+                <h3
                   className="text-3xl text-white mb-2 uppercase tracking-[-0.02em]"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
@@ -191,7 +201,7 @@ export default function PreJogoPage() {
               </div>
               <div className="mt-8 relative z-10">
                 <p className="text-white font-medium text-sm mb-6 leading-relaxed">
-                  Diferença de valor no &apos;Empate&apos; no evento principal. 
+                  Diferença de valor no &apos;Empate&apos; no evento principal.
                   Modelo sugere discrepância de mercado.
                 </p>
                 <button className="w-full bg-white text-primary py-3 rounded-lg font-bold text-[10px] uppercase tracking-widest hover:bg-gray-100 transition-colors active:scale-95 shadow-md">
