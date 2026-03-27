@@ -6,6 +6,8 @@ import { Footer } from "@/components/layout/footer";
 import { FloatingBot } from "@/components/layout/floating-bot";
 import { QueryProvider } from "@/providers/query-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { ScrollReset } from "@/components/scroll-reset";
+import { LenisProvider } from "@/components/lenis-provider";
 
 const newAmsterdam = New_Amsterdam({
   weight: "400",
@@ -38,14 +40,17 @@ export default function RootLayout({
       className={`${newAmsterdam.variable} ${notoSans.variable}`}
     >
       <body className="min-h-screen flex flex-col">
-        <ThemeProvider>
-          <QueryProvider>
-            <Navbar />
-            <main className="pt-[60px] flex-1">{children}</main>
-            <Footer />
-            <FloatingBot />
-          </QueryProvider>
-        </ThemeProvider>
+        <LenisProvider>
+          <ThemeProvider>
+            <QueryProvider>
+              <ScrollReset />
+              <Navbar />
+              <main className="pt-[60px] flex-1">{children}</main>
+              <Footer />
+              <FloatingBot />
+            </QueryProvider>
+          </ThemeProvider>
+        </LenisProvider>
       </body>
     </html>
   );
