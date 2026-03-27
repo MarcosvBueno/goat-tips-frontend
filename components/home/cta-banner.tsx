@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const STATS = [
   { label: 'Brier Score', value: '0.2~' },
@@ -88,7 +89,7 @@ export function CtaBanner() {
               odd{' '}
               <span className="relative inline-block text-[#012AFE]">
                 perfeita.
-                <span className="absolute left-0 -bottom-1 w-full h-[2px] rounded-full bg-gradient-to-r from-[#012AFE] to-transparent opacity-40 dark:opacity-60" />
+                <span className="absolute left-0 -bottom-1 w-full h-[2px] rounded-full bg-linear-to-r from-[#012AFE] to-transparent opacity-40 dark:opacity-60" />
               </span>
             </h2>
 
@@ -121,12 +122,13 @@ export function CtaBanner() {
 
           {/* Right column — CTA */}
           <div className="flex flex-col items-start md:items-end gap-3 pb-7 md:pb-10 shrink-0">
-            <button
-              className="group relative overflow-hidden px-8 py-[14px] rounded-xl bg-[#012AFE] text-white font-bold tracking-[0.04em] transition-all duration-300 hover:scale-[1.03] shadow-none hover:shadow-[0_0_48px_rgba(1,42,254,0.55)]"
+            <Link
+              href="/tipster"
+              className="group relative overflow-hidden px-8 py-[14px] rounded-xl bg-[#012AFE] text-white font-bold tracking-[0.04em] transition-all duration-300 hover:scale-[1.03] shadow-none hover:shadow-[0_0_48px_rgba(1,42,254,0.55)] inline-flex"
               style={{ fontFamily: 'var(--font-body)', fontSize: '14px' }}
             >
               {/* Shimmer */}
-              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
+              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-linear-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
 
               <span className="relative z-10 flex items-center gap-2.5">
                 Montar agora
@@ -146,7 +148,7 @@ export function CtaBanner() {
                   />
                 </svg>
               </span>
-            </button>
+            </Link>
 
             <p className="text-[11px] tracking-[0.04em] text-[#0A0F2E]/40 dark:text-white/20">
               Sem cadastro · Análise gratuita
