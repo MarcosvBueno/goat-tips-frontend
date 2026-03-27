@@ -1,0 +1,708 @@
+<!doctype html>
+
+<html class="light" lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>GOAT TIPS | Simulador de Partida</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=New+Amsterdam&amp;family=Noto+Sans:wght@300;400;500;600;700;800&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              background: "#F8F8F8",
+              surface: "#FFFFFF",
+              primary: "#012AFE",
+              "on-surface": "#0F172A",
+              "on-surface-variant": "#64748B",
+              outline: "#E5E7EB",
+              "surface-container": "#FFFFFF",
+              "surface-container-low": "#FFFFFF",
+              "surface-container-high": "#F1F5F9",
+              "surface-container-highest": "#E2E8F0",
+            },
+            fontFamily: {
+              headline: ["New Amsterdam", "sans-serif"],
+              body: ["Noto Sans", "sans-serif"],
+              label: ["Noto Sans", "sans-serif"],
+              grotesk: ["Space Grotesk", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.125rem",
+              lg: "0.25rem",
+              xl: "0.5rem",
+              full: "0.75rem",
+            },
+            boxShadow: {
+              clinical: "0px 12px 32px rgba(1, 42, 254, 0.04)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+      }
+      .ai-glow-light {
+        box-shadow: 0 0 20px rgba(1, 42, 254, 0.05);
+      }
+      .grid-bg-light {
+        background-image: radial-gradient(
+          circle at 2px 2px,
+          rgba(1, 42, 254, 0.03) 1px,
+          transparent 0
+        );
+        background-size: 24px 24px;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background text-on-surface font-body selection:bg-primary/10 grid-bg-light min-h-screen"
+  >
+    <!-- TopNavBar -->
+    <header
+      class="fixed top-0 w-full flex justify-between items-center h-16 px-6 bg-white/80 backdrop-blur-md z-50 shadow-[0px_12px_32px_rgba(1,42,254,0.06)]"
+    >
+      <div class="text-2xl font-headline tracking-tighter text-slate-900">
+        GOAT TIPS
+      </div>
+      <nav
+        class="hidden md:flex items-center gap-8 font-grotesk font-medium text-sm tracking-tight"
+      >
+        <a
+          class="text-slate-600 hover:text-slate-900 transition-colors"
+          href="#"
+          >Predictions</a
+        >
+        <a
+          class="text-slate-600 hover:text-slate-900 transition-colors"
+          href="#"
+          >Insights</a
+        >
+        <a
+          class="text-slate-600 hover:text-slate-900 transition-colors"
+          href="#"
+          >Laboratory</a
+        >
+        <a class="text-blue-600 border-b-2 border-blue-600 pb-1" href="#"
+          >Simulator</a
+        >
+      </nav>
+      <div class="flex items-center gap-4">
+        <button
+          class="bg-[#012AFE] text-white px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-[#012AFE]/90 transition-all active:scale-95 shadow-lg shadow-primary/20"
+        >
+          Connect Wallet
+        </button>
+      </div>
+    </header>
+    <!-- SideNavBar -->
+    <aside
+      class="hidden lg:flex flex-col h-screen fixed left-0 top-0 w-64 bg-slate-50 z-40 pt-20"
+    >
+      <div class="px-6 mb-8">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden ring-2 ring-white"
+          >
+            <img
+              alt="User Profile"
+              class="w-full h-full object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNbTPLHls4u5s8xfOfUzj1jDJ7osHIgwFlqpWyRDA9UP5u7tNTvxuFFPetVZP8YJFHPfQQpn_eko32tM5XyHP0j3h46G8FYZ6rupPOJrkqiUKNA499Bz6dbgjDRG9r36d0GH0nsSOLGmgWDkVYFWFX4w0KQULHj6J06q0QiPxT283XfG0ps1iu8HaAXJ1L5nzcHxEnx-1wLghCBxNxHjjh6CCwa_8bgLXEyn76Q52supcSxrYeGQGyTNnp2qUWJ2UM1kLqjCMeYM6t"
+            />
+          </div>
+          <div>
+            <h3
+              class="text-slate-900 font-bold text-xs uppercase tracking-widest font-headline"
+            >
+              Clinical Analyst
+            </h3>
+            <p class="text-[10px] text-slate-500 uppercase tracking-tighter">
+              Elite Tier
+            </p>
+          </div>
+        </div>
+      </div>
+      <nav
+        class="flex-1 px-4 space-y-1 font-['Noto_Sans'] text-sm font-semibold"
+      >
+        <a
+          class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 hover:translate-x-1 transition-all group"
+          href="#"
+        >
+          <span class="material-symbols-outlined text-xl">dashboard</span>
+          <span class="uppercase tracking-widest text-[10px]">Dashboard</span>
+        </a>
+        <a
+          class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 hover:translate-x-1 transition-all group"
+          href="#"
+        >
+          <span class="material-symbols-outlined text-xl">sensors</span>
+          <span class="uppercase tracking-widest text-[10px]"
+            >Live Signals</span
+          >
+        </a>
+        <a
+          class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg group"
+          href="#"
+        >
+          <span class="material-symbols-outlined text-xl">science</span>
+          <span class="uppercase tracking-widest text-[10px]">Betting Lab</span>
+        </a>
+        <a
+          class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 hover:translate-x-1 transition-all group"
+          href="#"
+        >
+          <span class="material-symbols-outlined text-xl">history</span>
+          <span class="uppercase tracking-widest text-[10px]">History</span>
+        </a>
+        <a
+          class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 hover:translate-x-1 transition-all group"
+          href="#"
+        >
+          <span class="material-symbols-outlined text-xl">settings</span>
+          <span class="uppercase tracking-widest text-[10px]">Settings</span>
+        </a>
+      </nav>
+      <div class="p-6">
+        <button
+          class="w-full py-3 bg-white text-blue-600 border border-blue-100 text-[10px] font-bold uppercase tracking-[0.2em] rounded-lg hover:bg-blue-50 transition-all shadow-sm"
+        >
+          Upgrade to Pro
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area -->
+    <main class="lg:ml-64 pt-24 pb-12 px-6 lg:px-12 max-w-7xl mx-auto">
+      <!-- Header Section -->
+      <div
+        class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6"
+      >
+        <div>
+          <h1
+            class="text-5xl md:text-7xl font-black font-headline uppercase tracking-tighter text-slate-900 leading-none"
+          >
+            Simulador <span class="text-[#012AFE]">Lab</span>
+          </h1>
+          <p
+            class="mt-4 text-slate-500 font-medium max-w-md text-sm leading-relaxed"
+          >
+            Monte qualquer cenário e receba uma previsão calibrada em tempo real
+            com modelos Poisson de alta precisão.
+          </p>
+        </div>
+        <div class="flex gap-4">
+          <div
+            class="bg-white px-4 py-2 rounded-lg border border-slate-200 flex flex-col items-end shadow-sm"
+          >
+            <span
+              class="text-[10px] text-slate-400 uppercase font-bold tracking-widest"
+              >Calculated nodes</span
+            >
+            <span class="text-lg font-headline text-[#012AFE]">14,204/sec</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+        <!-- Selection Panel (Left Column) -->
+        <div class="xl:col-span-4 space-y-6">
+          <div
+            class="bg-white p-6 rounded-xl border border-slate-200 shadow-clinical"
+          >
+            <div class="flex items-center gap-2 mb-6">
+              <span class="material-symbols-outlined text-[#012AFE]"
+                >settings_input_component</span
+              >
+              <h2
+                class="text-xs font-bold uppercase tracking-widest text-slate-900"
+              >
+                Parâmetros de Entrada
+              </h2>
+            </div>
+            <div class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="group">
+                  <label
+                    class="block text-[10px] text-slate-400 uppercase font-bold mb-1 ml-1 tracking-tighter"
+                    >Time da Casa</label
+                  >
+                  <div class="relative">
+                    <select
+                      class="w-full bg-slate-50 border border-slate-100 focus:border-[#012AFE] focus:ring-0 text-slate-900 text-xs py-3 px-3 appearance-none transition-all outline-none rounded-lg cursor-pointer"
+                    >
+                      <option>Aston Villa</option>
+                      <option>Real Madrid</option>
+                      <option>Manchester City</option>
+                    </select>
+                    <span
+                      class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-sm"
+                      >expand_more</span
+                    >
+                  </div>
+                </div>
+                <div class="group">
+                  <label
+                    class="block text-[10px] text-slate-400 uppercase font-bold mb-1 ml-1 tracking-tighter"
+                    >Time Visitante</label
+                  >
+                  <div class="relative">
+                    <select
+                      class="w-full bg-slate-50 border border-slate-100 focus:border-[#012AFE] focus:ring-0 text-slate-900 text-xs py-3 px-3 appearance-none transition-all outline-none rounded-lg cursor-pointer"
+                    >
+                      <option>Brentford</option>
+                      <option>Barcelona</option>
+                      <option>Liverpool</option>
+                    </select>
+                    <span
+                      class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-sm"
+                      >expand_more</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="group">
+                <label
+                  class="block text-[10px] text-slate-400 uppercase font-bold mb-1 ml-1 tracking-tighter"
+                  >Árbitro (Opcional)</label
+                >
+                <div class="relative">
+                  <select
+                    class="w-full bg-slate-50 border border-slate-100 focus:border-[#012AFE] focus:ring-0 text-slate-900 text-sm py-3 px-4 appearance-none transition-all outline-none rounded-lg cursor-pointer"
+                  >
+                    <option>Andre Marriner</option>
+                    <option>C. Turpin</option>
+                    <option>M. Oliver</option>
+                  </select>
+                  <span
+                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400"
+                    >expand_more</span
+                  >
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="group">
+                  <label
+                    class="block text-[10px] text-slate-400 uppercase font-bold mb-1 ml-1 tracking-tighter"
+                    >Estádio</label
+                  >
+                  <input
+                    class="w-full bg-slate-50 border border-slate-100 focus:border-[#012AFE] focus:ring-0 text-slate-900 text-xs py-3 px-4 rounded-lg outline-none"
+                    placeholder="Ex: Emirates"
+                    type="text"
+                  />
+                </div>
+                <div class="group">
+                  <label
+                    class="block text-[10px] text-slate-400 uppercase font-bold mb-1 ml-1 tracking-tighter"
+                    >Cidade</label
+                  >
+                  <input
+                    class="w-full bg-slate-50 border border-slate-100 focus:border-[#012AFE] focus:ring-0 text-slate-900 text-xs py-3 px-4 rounded-lg outline-none"
+                    placeholder="Ex: London"
+                    type="text"
+                  />
+                </div>
+              </div>
+              <div class="group">
+                <label
+                  class="block text-[10px] text-slate-400 uppercase font-bold mb-1 ml-1 tracking-tighter"
+                  >Horário UTC (0-23)</label
+                >
+                <input
+                  class="w-full bg-slate-50 border border-slate-100 focus:border-[#012AFE] focus:ring-0 text-slate-900 text-xs py-3 px-4 rounded-lg outline-none"
+                  placeholder="Ex: 15"
+                  type="text"
+                />
+              </div>
+            </div>
+            <div class="mt-8 space-y-3">
+              <button
+                class="w-full py-4 bg-[#012AFE] text-white font-black font-headline text-xl uppercase tracking-widest hover:brightness-110 active:scale-[0.98] transition-all rounded-lg shadow-lg shadow-[#012AFE]/20"
+              >
+                Simular Partida
+              </button>
+              <button
+                class="w-full py-2 bg-transparent text-slate-400 font-bold text-[10px] uppercase tracking-widest hover:text-slate-600 transition-all border border-transparent hover:border-slate-200 rounded-lg"
+              >
+                Limpar Escolhas
+              </button>
+            </div>
+          </div>
+          <!-- Simulation Settings Meta -->
+          <div
+            class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3"
+          >
+            <div
+              class="flex justify-between items-center text-[10px] uppercase font-bold tracking-tighter"
+            >
+              <span class="text-slate-400">Confidence Interval</span>
+              <span class="text-[#012AFE]">98.4%</span>
+            </div>
+            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+              <div class="bg-[#012AFE] h-full w-[98.4%]"></div>
+            </div>
+            <div
+              class="flex justify-between items-center text-[10px] uppercase font-bold tracking-tighter"
+            >
+              <span class="text-slate-400">Model version</span>
+              <span class="text-slate-900">Goat-V4.2.Alpha</span>
+            </div>
+          </div>
+        </div>
+        <!-- Visualization Area (Right Column) -->
+        <div class="xl:col-span-8 space-y-6">
+          <!-- Most Probable Scores Row -->
+          <div
+            class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <h3
+                class="text-[10px] font-bold uppercase tracking-widest text-slate-900"
+              >
+                Placares Mais Prováveis
+              </h3>
+              <span class="text-[8px] text-slate-400 uppercase"
+                >Top 5 Resultados</span
+              >
+            </div>
+            <div class="grid grid-cols-5 gap-3">
+              <div
+                class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center relative overflow-hidden"
+              >
+                <span
+                  class="absolute top-0 left-1/2 -translate-x-1/2 text-[8px] font-black bg-blue-600 text-white px-2 rounded-b uppercase"
+                  >Top</span
+                >
+                <div class="text-xl font-headline text-[#012AFE] mt-1">1-1</div>
+                <div class="text-[10px] text-slate-500 font-bold">11.9%</div>
+              </div>
+              <div
+                class="bg-slate-50 border border-slate-100 rounded-lg p-3 text-center"
+              >
+                <div class="text-xl font-headline text-slate-900">2-1</div>
+                <div class="text-[10px] text-slate-500 font-bold">8.7%</div>
+              </div>
+              <div
+                class="bg-slate-50 border border-slate-100 rounded-lg p-3 text-center"
+              >
+                <div class="text-xl font-headline text-slate-900">1-2</div>
+                <div class="text-[10px] text-slate-500 font-bold">8.1%</div>
+              </div>
+              <div
+                class="bg-slate-50 border border-slate-100 rounded-lg p-3 text-center"
+              >
+                <div class="text-xl font-headline text-slate-900">1-0</div>
+                <div class="text-[10px] text-slate-500 font-bold">7.4%</div>
+              </div>
+              <div
+                class="bg-slate-50 border border-slate-100 rounded-lg p-3 text-center"
+              >
+                <div class="text-xl font-headline text-slate-900">0-1</div>
+                <div class="text-[10px] text-slate-500 font-bold">6.8%</div>
+              </div>
+            </div>
+          </div>
+          <!-- Probability Matrix Heatmap -->
+          <div
+            class="bg-white p-6 rounded-xl border border-slate-200 shadow-clinical"
+          >
+            <div class="flex justify-between items-center mb-6">
+              <h3
+                class="text-[10px] font-bold uppercase tracking-widest text-slate-900"
+              >
+                Matriz de Probabilidade
+              </h3>
+              <div
+                class="flex items-center gap-4 text-[9px] text-slate-400 uppercase font-bold"
+              >
+                <div class="flex items-center gap-1">
+                  <span class="w-2 h-2 rounded-full bg-blue-50"></span> Low
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="w-2 h-2 rounded-full bg-blue-600"></span> High
+                </div>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-[10px] font-bold">
+                <thead>
+                  <tr>
+                    <th class="p-2 text-slate-300 italic">AST\BRE</th>
+                    <th class="p-2 text-slate-900">0</th>
+                    <th class="p-2 text-slate-900">1</th>
+                    <th class="p-2 text-slate-900">2</th>
+                    <th class="p-2 text-slate-900">3</th>
+                    <th class="p-2 text-slate-900">4</th>
+                    <th class="p-2 text-slate-900">5</th>
+                  </tr>
+                </thead>
+                <tbody class="text-center">
+                  <tr>
+                    <td class="p-2 text-slate-900">0</td>
+                    <td class="p-2 bg-blue-100/40 text-slate-600 rounded-sm">
+                      5.8
+                    </td>
+                    <td class="p-2 bg-blue-200/50 text-slate-600 rounded-sm">
+                      6.8
+                    </td>
+                    <td class="p-2 bg-blue-100/40 text-slate-600 rounded-sm">
+                      5.2
+                    </td>
+                    <td class="p-2 bg-blue-50 text-slate-400 rounded-sm">
+                      2.5
+                    </td>
+                    <td class="p-2 bg-blue-50/30 text-slate-300 rounded-sm">
+                      0.9
+                    </td>
+                    <td class="p-2 bg-blue-50/20 text-slate-300 rounded-sm">
+                      0.3
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="p-2 text-slate-900">1</td>
+                    <td class="p-2 bg-blue-200/60 text-slate-700 rounded-sm">
+                      7.4
+                    </td>
+                    <td
+                      class="p-2 bg-blue-600 text-white rounded-sm ring-1 ring-blue-700"
+                    >
+                      11.9
+                    </td>
+                    <td class="p-2 bg-blue-300/70 text-slate-800 rounded-sm">
+                      8.1
+                    </td>
+                    <td class="p-2 bg-blue-100/50 text-slate-600 rounded-sm">
+                      3.8
+                    </td>
+                    <td class="p-2 bg-blue-50 text-slate-400 rounded-sm">
+                      1.4
+                    </td>
+                    <td class="p-2 bg-blue-50/30 text-slate-300 rounded-sm">
+                      0.4
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="p-2 text-slate-900">2</td>
+                    <td class="p-2 bg-blue-200/40 text-slate-600 rounded-sm">
+                      6.1
+                    </td>
+                    <td class="p-2 bg-blue-400/80 text-white rounded-sm">
+                      8.7
+                    </td>
+                    <td class="p-2 bg-blue-200/50 text-slate-600 rounded-sm">
+                      6.2
+                    </td>
+                    <td class="p-2 bg-blue-100/30 text-slate-500 rounded-sm">
+                      2.9
+                    </td>
+                    <td class="p-2 bg-blue-50/50 text-slate-300 rounded-sm">
+                      1.0
+                    </td>
+                    <td class="p-2 bg-blue-50/20 text-slate-300 rounded-sm">
+                      0.3
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="p-2 text-slate-900">3</td>
+                    <td class="p-2 bg-blue-100/30 text-slate-500 rounded-sm">
+                      3.1
+                    </td>
+                    <td class="p-2 bg-blue-100/60 text-slate-600 rounded-sm">
+                      4.5
+                    </td>
+                    <td class="p-2 bg-blue-100/40 text-slate-500 rounded-sm">
+                      3.2
+                    </td>
+                    <td class="p-2 bg-blue-50/60 text-slate-400 rounded-sm">
+                      1.5
+                    </td>
+                    <td class="p-2 bg-blue-50/30 text-slate-300 rounded-sm">
+                      0.5
+                    </td>
+                    <td class="p-2 bg-blue-50/20 text-slate-300 rounded-sm">
+                      0.2
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="p-2 text-slate-900">4</td>
+                    <td class="p-2 bg-blue-50/50 text-slate-400 rounded-sm">
+                      1.2
+                    </td>
+                    <td class="p-2 bg-blue-50/70 text-slate-500 rounded-sm">
+                      1.7
+                    </td>
+                    <td class="p-2 bg-blue-50/50 text-slate-400 rounded-sm">
+                      1.2
+                    </td>
+                    <td class="p-2 bg-blue-50/30 text-slate-300 rounded-sm">
+                      0.6
+                    </td>
+                    <td class="p-2 bg-blue-50/10 text-slate-300 rounded-sm">
+                      0.2
+                    </td>
+                    <td class="p-2 bg-blue-50/10 text-slate-300 rounded-sm">
+                      0.1
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="p-2 text-slate-900">5</td>
+                    <td class="p-2 bg-blue-50/20 text-slate-300 rounded-sm">
+                      0.4
+                    </td>
+                    <td class="p-2 bg-blue-50/30 text-slate-300 rounded-sm">
+                      0.5
+                    </td>
+                    <td class="p-2 bg-blue-50/20 text-slate-300 rounded-sm">
+                      0.4
+                    </td>
+                    <td class="p-2 bg-blue-50/10 text-slate-300 rounded-sm">
+                      0.2
+                    </td>
+                    <td class="p-2 bg-blue-50/10 text-slate-300 rounded-sm">
+                      0.1
+                    </td>
+                    <td class="p-2 bg-blue-50/10 text-slate-300 rounded-sm">
+                      0.0
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Detailed Parameters Cards (from IMAGE_4) -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div
+              class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center text-center"
+            >
+              <span
+                class="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2"
+                >XG CASA</span
+              >
+              <div class="text-3xl font-headline text-[#012AFE]">1.54</div>
+              <span class="text-[8px] text-slate-400 uppercase mt-1"
+                >Aston Villa</span
+              >
+            </div>
+            <div
+              class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center text-center"
+            >
+              <span
+                class="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2"
+                >XG FORA</span
+              >
+              <div class="text-3xl font-headline text-red-500">1.42</div>
+              <span class="text-[8px] text-slate-400 uppercase mt-1"
+                >Brentford</span
+              >
+            </div>
+            <div
+              class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center text-center"
+            >
+              <span
+                class="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2"
+                >OVER 2.5</span
+              >
+              <div class="text-3xl font-headline text-slate-900">57%</div>
+              <div
+                class="w-full bg-slate-100 h-1 mt-3 rounded-full overflow-hidden"
+              >
+                <div class="bg-slate-900 h-full w-[57%]"></div>
+              </div>
+            </div>
+            <div
+              class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center text-center"
+            >
+              <span
+                class="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2"
+                >BTTS</span
+              >
+              <div class="text-3xl font-headline text-slate-900">60%</div>
+              <div
+                class="w-full bg-slate-100 h-1 mt-3 rounded-full overflow-hidden"
+              >
+                <div class="bg-slate-900 h-full w-[60%]"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Simulation Log / Science Footer -->
+          <div
+            class="bg-slate-100/50 p-6 rounded-xl border border-slate-200 font-mono text-[10px] text-slate-500 shadow-inner"
+          >
+            <div
+              class="flex items-center gap-2 mb-3 border-b border-slate-200 pb-2"
+            >
+              <span
+                class="w-2 h-2 rounded-full bg-[#012AFE] animate-pulse"
+              ></span>
+              <span class="uppercase tracking-widest font-bold text-slate-700"
+                >Engine Status: Ready</span
+              >
+            </div>
+            <div class="space-y-1">
+              <p>&gt; Initializing Simulation Kernel...</p>
+              <p>&gt; Loading historical data sets (2018-2024)...</p>
+              <p>&gt; Calculating referee bias coefficients...</p>
+              <p>&gt; Simulation calibration complete. Waiting for input.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- Visual Accents -->
+    <div
+      class="fixed top-0 right-0 w-[500px] h-[500px] bg-blue-100/20 blur-[120px] -z-10 rounded-full pointer-events-none"
+    ></div>
+    <div
+      class="fixed bottom-0 left-0 w-[300px] h-[300px] bg-blue-50/30 blur-[100px] -z-10 rounded-full pointer-events-none"
+    ></div>
+    <!-- Footer -->
+    <footer
+      class="lg:ml-64 w-auto py-12 px-6 border-t border-slate-200 bg-slate-50"
+    >
+      <div
+        class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 w-full"
+      >
+        <div class="font-headline text-lg text-slate-400">GOAT TIPS</div>
+        <p class="font-['Noto_Sans'] text-xs text-slate-500">
+          © 2024 GOAT TIPS. All rights reserved.
+        </p>
+        <div class="flex gap-6">
+          <a
+            class="text-slate-400 hover:text-slate-900 transition-colors font-['Noto_Sans'] text-xs"
+            href="#"
+            >Terms</a
+          >
+          <a
+            class="text-slate-400 hover:text-slate-900 transition-colors font-['Noto_Sans'] text-xs"
+            href="#"
+            >Privacy</a
+          >
+          <a
+            class="text-slate-400 hover:text-slate-900 transition-colors font-['Noto_Sans'] text-xs"
+            href="#"
+            >Responsible Gaming</a
+          >
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
