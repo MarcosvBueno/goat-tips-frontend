@@ -273,27 +273,21 @@ export function Footer() {
 
   return (
     <footer id="footer" className="w-full pb-0 border-t border-border mt-14">
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between p-8 md:p-10 max-w-[1280px] mx-auto gap-10">
+      <div className="flex flex-col items-center text-center md:flex-row md:items-start md:text-left md:justify-between p-8 md:p-10 max-w-[1280px] mx-auto gap-10">
         {/* Brand column */}
-        <div className="flex flex-col items-start gap-5 max-w-xs">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 shrink-0 relative rounded-full border border-border/70 bg-(--bg2) p-1.5">
-              <Image src="/azul-simbolo.svg" alt="Goat Tips" fill className="object-contain p-1" />
+        <div className="flex flex-col items-center text-center md:items-start md:text-left gap-5 max-w-xs">
+          <Link href="/" className="flex items-center gap-3 mx-auto md:mx-0">
+            <div className="w-[156px] h-[32px] md:w-[176px] md:h-[36px] relative">
+              <Image src="/azul-logo-horizontal.svg" alt="Goat Tips" fill className="object-contain p-1" />
             </div>
-            <div className="w-[142px] h-[28px] relative shrink-0">
-              <Image src="/azul-logotipo.svg" alt="Goat Tips" fill className="object-contain" />
-            </div>
+          
           </Link>
 
           <p className="text-[13px] text-(--text2) leading-[1.6] font-medium">
             Probabilidades calibradas com dados históricos, modelo Expectativa de Gols ao vivo e análise de padrões. Sem viés humano, sem achismo.
           </p>
 
-          <div className="flex items-center gap-2.5">
-            <TrustBadge value="84%" label="Acurácia" />
-            <TrustBadge value="1.8k" label="Partidas" />
-            <TrustBadge value="3" label="APIs" />
-          </div>
+      
 
           <p className="text-[11px] text-(--text3)">
             © 2026 Goat Tips. Jogue com responsabilidade.
@@ -301,16 +295,16 @@ export function Footer() {
         </div>
 
         {/* Links columns */}
-        <div className="flex flex-col md:flex-row gap-8 md:gap-12 lg:gap-16">
+        <div className="flex flex-col items-center md:items-start md:flex-row gap-8 md:gap-12 lg:gap-16">
           {FOOTER_LINKS.map((column, idx) => (
-            <ul key={idx} className="flex flex-col gap-2">
+            <ul key={idx} className="flex flex-col items-center md:items-start gap-2">
               <li className="mb-1 text-[12px] font-semibold text-(--text) uppercase tracking-[0.08em]">
                 {column.title}
               </li>
               {column.links.map((link) => (
                 <li
                   key={link.id}
-                  className="group inline-flex cursor-pointer items-center gap-1 text-[13px] text-(--text2)"
+                  className="group inline-flex w-full justify-center md:w-auto md:justify-start cursor-pointer items-center gap-1 text-[13px] text-(--text2)"
                 >
                   <Link
                     href={link.url}
@@ -318,7 +312,7 @@ export function Footer() {
                   >
                     {link.title}
                   </Link>
-                  <div className="flex size-4 items-center justify-center border border-border rounded translate-x-0 opacity-0 transition-all duration-200 ease-out group-hover:translate-x-1 group-hover:opacity-100 text-(--text3)">
+                  <div className="hidden md:flex size-4 items-center justify-center border border-border rounded translate-x-0 opacity-0 transition-all duration-200 ease-out group-hover:translate-x-1 group-hover:opacity-100 text-(--text3)">
                     <ChevronRightIcon className="h-3 w-3" />
                   </div>
                 </li>

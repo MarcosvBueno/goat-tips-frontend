@@ -3,17 +3,14 @@
 import { useEffect, useRef } from "react";
 import Lenis from "lenis";
 
-// Store Lenis instance in a ref to avoid type conflicts with Window
-type LenisInstance = Lenis;
-
 /**
  * Provider que inicializa o Lenis smooth scroll em toda a aplicação.
+ * Expõe a instância em window.lenis para que ScrollReset possa usá-la.
  */
 export function LenisProvider({ children }: { children: React.ReactNode }) {
-  const lenisRef = useRef<LenisInstance | null>(null);
+  const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // Inicializa o Lenis com configurações otimizadas
     const lenis = new Lenis({
       lerp: 0.1,
       wheelMultiplier: 0.7,
@@ -22,7 +19,10 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
 
     lenisRef.current = lenis;
 
-    // Raf loop para o Lenis
+    // Expose on window so ScrollReset can access it
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).lenis = lenis;
+
     function raf(time: number) {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -30,10 +30,11 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
 
     requestAnimationFrame(raf);
 
-    // Cleanup
     return () => {
       lenis.destroy();
       lenisRef.current = null;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (window as any).lenis;
     };
   }, []);
 

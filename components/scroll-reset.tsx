@@ -1,30 +1,29 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 
 /**
  * Componente que garante que o scroll seja resetado ao topo
  * ao navegar entre páginas no Next.js App Router.
- * 
- * Compatível com Lenis - usa lenis.scrollTo quando disponível.
+ *
+ * Escuta mudanças de pathname para disparar a cada navegação,
+ * e usa lenis.scrollTo quando disponível para compatibilidade.
  */
 export function ScrollReset() {
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+  const pathname = usePathname();
 
-    // Tenta usar Lenis primeiro, se disponível
+  useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const lenisInstance = (window as unknown as { lenis?: Lenis }).lenis;
-    
+    const lenisInstance = (window as any).lenis as Lenis | undefined;
+
     if (lenisInstance) {
-      // Usa Lenis para scroll suave ao topo
       lenisInstance.scrollTo(0, { immediate: true });
     } else {
-      // Fallback para scroll nativo
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     }
-  }, []);
+  }, [pathname]);
 
   return null;
 }
