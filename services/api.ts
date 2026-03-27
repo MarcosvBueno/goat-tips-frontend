@@ -1,5 +1,5 @@
 const BASE_URL =
-  "https://goat-tips-backend-api.27s4ihbbhmjf.us-east.codeengine.appdomain.cloud";
+  process.env.NEXT_PUBLIC_API_BASE_URL 
 
 export class ApiError extends Error {
   constructor(

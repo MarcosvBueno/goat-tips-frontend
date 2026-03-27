@@ -3,17 +3,20 @@ import { TickerBand } from "@/components/home/ticker-band";
 import { CtaBanner } from "@/components/home/cta-banner";
 import { HomeMatches } from "@/components/home/home-matches";
 import { TopPicks } from "@/components/home/top-picks";
+import { FirstVisitPreloader } from "@/components/home/first-visit-preloader";
 
 export default function HomePage() {
   return (
-    <div className="animate-fade-in">
-      <Hero />
-      <TickerBand />
-      <CtaBanner />
-      <div className="max-w-[1280px] mx-auto px-4 md:px-8 space-y-12 pb-12">
-        <TopPicks />
-        <HomeMatches />
+    <FirstVisitPreloader>
+      <div className="animate-fade-in">
+        <Hero />
+        <TickerBand />
+        <CtaBanner />
+        <div className="max-w-[1280px] mx-auto px-4 md:px-8 space-y-12 pb-12">
+          <TopPicks />
+          <HomeMatches />
+        </div>
       </div>
-    </div>
+    </FirstVisitPreloader>
   );
 }
