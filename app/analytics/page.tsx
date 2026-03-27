@@ -322,7 +322,7 @@ export default function AnalyticsPage() {
             >
               <div className="flex flex-col gap-3.5">
                 <StatLine
-                  label="xG por jogo"
+                  label="Expectativa de Gols por jogo"
                   value={teamProfile.avg_xg.toFixed(2)}
                   fill={teamProfile.avg_xg * 40}
                   color={TINTS.blue}

@@ -792,13 +792,13 @@ function ResultsDashboard({
       >
         {[
           {
-            label: "xG Casa",
+            label: "Expectativa de Gols Casa",
             value: prediction.lambda_home.toFixed(2),
             sub: prediction.home_team,
             color: "#012AFE",
           },
           {
-            label: "xG Fora",
+            label: "Expectativa de Gols Fora",
             value: prediction.lambda_away.toFixed(2),
             sub: prediction.away_team,
             color: "#FF3B3B",
