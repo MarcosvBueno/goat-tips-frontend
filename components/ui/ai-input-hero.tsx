@@ -1,19 +1,19 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
-import Image from "next/image";
-import { motion } from "framer-motion";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import gsap from "gsap";
-import { useTheme } from "next-themes";
+import { AiMessageBubble } from "@/components/chat/ai-message-bubble";
 import { useAskQuestion } from "@/hooks/use-predictions";
 import { useChatStore } from "@/store/use-chat-store";
-import { AiMessageBubble } from "@/components/chat/ai-message-bubble";
 import type { ChatMessage, NarrativeResponse } from "@/types/api";
+import { motion } from "framer-motion";
+import gsap from "gsap";
+import { useTheme } from "next-themes";
+import Image from "next/image";
+import React, { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 export type HeroWaveProps = {
   className?: string;
@@ -71,7 +71,7 @@ export function HeroWave({
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
   const initialized = useRef(false);
   const askMutation = useAskQuestion();
-  const { getOrCreateSession, addMessage, setTyping } = useChatStore();
+  const { getOrCreateSession, addMessage, setTyping, clearSession } = useChatStore();
   const session = useChatStore((s) => s.sessions["__global__"] ?? null);
   const messages = session?.messages ?? [];
   const isTyping = session?.isTyping ?? false;
@@ -79,14 +79,17 @@ export function HeroWave({
   const hasStartedConversation = messages.some((msg) => msg.role === "user");
 
   const basePlaceholder = "Me mostre";
-  const suggestionsRef = useRef<string[]>([
+  const [suggestions] = useState<string[]>([
     " analise de Arsenal x Liverpool",
     " melhor mercado para over 2.5",
-    " tendencia de cartoes no derby",
-    " comparativo de forma dos times",
+    " tendencia de cartoes no jogo",
+    " comparativo de formação dos times",
     " previsao para proximo jogo do City",
+    " retrospecto de confrontos diretos",
+    " os times favoritos jogando em casa",
   ]);
-  const [animatedPlaceholder, setAnimatedPlaceholder] = useState<string>(basePlaceholder);
+  const [animatedPlaceholder, setAnimatedPlaceholder] =
+    useState<string>(basePlaceholder);
   const typingStateRef = useRef({
     suggestionIndex: 0,
     charIndex: 0,
@@ -126,7 +129,9 @@ export function HeroWave({
           onPromptSubmit?.(text);
         },
         onError: () => {
-          addMessage(createMessage("ai", "Desculpe, ocorreu um erro. Tente novamente."));
+          addMessage(
+            createMessage("ai", "Desculpe, ocorreu um erro. Tente novamente."),
+          );
           setTyping(false);
         },
       },
@@ -159,8 +164,8 @@ export function HeroWave({
       }
 
       const state = typingStateRef.current;
-      const suggestions = suggestionsRef.current;
-      const current = suggestions[state.suggestionIndex % suggestions.length] || "";
+      const current =
+        suggestions[state.suggestionIndex % suggestions.length] || "";
 
       if (!state.deleting) {
         const nextIndex = state.charIndex + 1;
@@ -182,7 +187,8 @@ export function HeroWave({
         state.charIndex = nextIndex;
         if (nextIndex <= 0) {
           state.deleting = false;
-          state.suggestionIndex = (state.suggestionIndex + 1) % suggestions.length;
+          state.suggestionIndex =
+            (state.suggestionIndex + 1) % suggestions.length;
           schedule(step, pauseBetween);
         } else {
           schedule(step, deleteSpeed);
@@ -196,7 +202,7 @@ export function HeroWave({
       typingStateRef.current.running = false;
       clearTimers();
     };
-  }, [prompt]);
+  }, [prompt, suggestions]);
 
   useEffect(() => {
     if (!containerRef.current || !waveRef.current) return;
@@ -248,8 +254,10 @@ export function HeroWave({
 
     function createFilmGrainPass(intensity = 0.9, grainScale = 0.3) {
       const pass = new ShaderPass(FilmGrainShader as never);
-      (pass.uniforms as Record<string, { value: number }>).intensity.value = intensity;
-      (pass.uniforms as Record<string, { value: number }>).grainScale.value = grainScale;
+      (pass.uniforms as Record<string, { value: number }>).intensity.value =
+        intensity;
+      (pass.uniforms as Record<string, { value: number }>).grainScale.value =
+        grainScale;
       return pass;
     }
 
@@ -324,7 +332,10 @@ export function HeroWave({
       waveContainer.removeChild(waveContainer.firstChild);
     }
 
-    const waveRenderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
+    const waveRenderer = new THREE.WebGLRenderer({
+      antialias: false,
+      alpha: true,
+    });
     waveRenderer.setPixelRatio(EFFECT_PR);
     waveRenderer.toneMapping = THREE.ACESFilmicToneMapping;
     waveRenderer.toneMappingExposure = 1.0;
@@ -362,10 +373,13 @@ export function HeroWave({
 
     function updateGlowDistance() {
       if (!barMaterial) return;
-      const totalWidth = currentBarCount * (FIXED_BAR_WIDTH + FIXED_BAR_GAP) - FIXED_BAR_GAP;
+      const totalWidth =
+        currentBarCount * (FIXED_BAR_WIDTH + FIXED_BAR_GAP) - FIXED_BAR_GAP;
       const spanPx = totalWidth * 0.3;
       glowConfig.maxGlowDistance = spanPx;
-      (barMaterial.uniforms as Record<string, { value: number }>).uMaxGlowDist.value = spanPx;
+      (
+        barMaterial.uniforms as Record<string, { value: number }>
+      ).uMaxGlowDist.value = spanPx;
     }
 
     function createInstancedMaterial() {
@@ -477,9 +491,14 @@ export function HeroWave({
     }
 
     function setupQuickSetters() {
-      const u = (instancedBars?.material as THREE.ShaderMaterial).uniforms as Record<string, { value: number }>;
-      setMouseNDC = gsap.quickSetter(u.uMouseClipX, "value") as (v: number) => void;
-      setSmoothSpeed = gsap.quickSetter(u.uSmoothSpeed, "value") as (v: number) => void;
+      const u = (instancedBars?.material as THREE.ShaderMaterial)
+        .uniforms as Record<string, { value: number }>;
+      setMouseNDC = gsap.quickSetter(u.uMouseClipX, "value") as (
+        v: number,
+      ) => void;
+      setSmoothSpeed = gsap.quickSetter(u.uSmoothSpeed, "value") as (
+        v: number,
+      ) => void;
       setPhase1 = gsap.quickSetter(u.w1Phase, "value") as (v: number) => void;
       setPhase2 = gsap.quickSetter(u.w2Phase, "value") as (v: number) => void;
     }
@@ -489,18 +508,27 @@ export function HeroWave({
     function updateGainMultiplier() {
       if (!barMaterial) return;
       const targetPx = cameraHeight * SCREEN_COVERAGE;
-      (barMaterial.uniforms as Record<string, { value: number }>).uGainMul.value = targetPx / MAX_KEYFRAME_GAIN;
+      (
+        barMaterial.uniforms as Record<string, { value: number }>
+      ).uGainMul.value = targetPx / MAX_KEYFRAME_GAIN;
     }
 
     const listeners: Array<() => void> = [];
 
     function setupPointerTracking() {
       const el = waveRenderer.domElement;
-      const readCoords = (e: PointerEvent | TouchEvent): { x: number; y: number } => {
+      const readCoords = (
+        e: PointerEvent | TouchEvent,
+      ): { x: number; y: number } => {
         if ("clientX" in e) {
-          return { x: (e as PointerEvent).clientX, y: (e as PointerEvent).clientY };
+          return {
+            x: (e as PointerEvent).clientX,
+            y: (e as PointerEvent).clientY,
+          };
         }
-        const t = (e as TouchEvent).touches?.[0] || (e as TouchEvent).changedTouches?.[0];
+        const t =
+          (e as TouchEvent).touches?.[0] ||
+          (e as TouchEvent).changedTouches?.[0];
         return t ? { x: t.clientX, y: t.clientY } : { x: mouse.x, y: mouse.y };
       };
 
@@ -523,13 +551,21 @@ export function HeroWave({
         mouse.active = false;
       };
 
-      el.addEventListener("pointerdown", activate as EventListener, { passive: true });
-      el.addEventListener("pointermove", move as EventListener, { passive: true });
+      el.addEventListener("pointerdown", activate as EventListener, {
+        passive: true,
+      });
+      el.addEventListener("pointermove", move as EventListener, {
+        passive: true,
+      });
       window.addEventListener("pointerup", deactivate, { passive: true });
       el.addEventListener("pointerleave", deactivate, { passive: true });
 
-      el.addEventListener("touchstart", activate as EventListener, { passive: true });
-      el.addEventListener("touchmove", move as EventListener, { passive: true });
+      el.addEventListener("touchstart", activate as EventListener, {
+        passive: true,
+      });
+      el.addEventListener("touchmove", move as EventListener, {
+        passive: true,
+      });
       window.addEventListener("touchend", deactivate, { passive: true });
       window.addEventListener("touchcancel", deactivate, { passive: true });
 
@@ -547,7 +583,9 @@ export function HeroWave({
 
     function accumulateGlow(dt: number) {
       if (!instancedBars || !barCenters) return;
-      const attr = instancedBars.geometry.getAttribute("aGlow") as THREE.InstancedBufferAttribute;
+      const attr = instancedBars.geometry.getAttribute(
+        "aGlow",
+      ) as THREE.InstancedBufferAttribute;
       const arr = attr.array as Float32Array;
 
       const mouseWorldX = proxyMouseX - cameraWidth * 0.5;
@@ -584,9 +622,15 @@ export function HeroWave({
       const span = waveWidth + EXTEND_LEFT_PX;
       const barCount = Math.min(
         MAX_BARS,
-        Math.max(1, Math.floor((span + FIXED_BAR_GAP) / (FIXED_BAR_WIDTH + FIXED_BAR_GAP))),
+        Math.max(
+          1,
+          Math.floor(
+            (span + FIXED_BAR_GAP) / (FIXED_BAR_WIDTH + FIXED_BAR_GAP),
+          ),
+        ),
       );
-      const gap = barCount > 1 ? (span - barCount * FIXED_BAR_WIDTH) / (barCount - 1) : 0;
+      const gap =
+        barCount > 1 ? (span - barCount * FIXED_BAR_WIDTH) / (barCount - 1) : 0;
       currentBarCount = barCount;
 
       const startX = -waveWidth / 2 - EXTEND_LEFT_PX;
@@ -613,9 +657,17 @@ export function HeroWave({
       const geo = new THREE.PlaneGeometry(FIXED_BAR_WIDTH, 1, 1, 1);
       geo.translate(0, 0.5, 0);
       geo.setAttribute("aXPos", new THREE.InstancedBufferAttribute(aXPos, 1));
-      geo.setAttribute("aPosNorm", new THREE.InstancedBufferAttribute(aPosNorm, 1));
+      geo.setAttribute(
+        "aPosNorm",
+        new THREE.InstancedBufferAttribute(aPosNorm, 1),
+      );
       geo.setAttribute("aGroup", new THREE.InstancedBufferAttribute(aGroup, 1));
-      geo.setAttribute("aGlow", new THREE.InstancedBufferAttribute(aGlow, 1).setUsage(THREE.DynamicDrawUsage));
+      geo.setAttribute(
+        "aGlow",
+        new THREE.InstancedBufferAttribute(aGlow, 1).setUsage(
+          THREE.DynamicDrawUsage,
+        ),
+      );
 
       barMaterial = createInstancedMaterial();
       instancedBars = new THREE.InstancedMesh(geo, barMaterial, instCnt);
@@ -626,7 +678,15 @@ export function HeroWave({
       updateGlowDistance();
     }
 
-    function buildKeyframeTweens(target: typeof wave1, keyframes: Array<{ time: number; gain: number; frequency: number; waveLength: number }>) {
+    function buildKeyframeTweens(
+      target: typeof wave1,
+      keyframes: Array<{
+        time: number;
+        gain: number;
+        frequency: number;
+        waveLength: number;
+      }>,
+    ) {
       const tl = gsap.timeline();
       for (let i = 0; i < keyframes.length - 1; i++) {
         const cur = keyframes[i];
@@ -668,7 +728,12 @@ export function HeroWave({
       waveRenderPass = new RenderPass(waveScene, waveCamera);
       waveComposer.addPass(waveRenderPass);
 
-      waveBloomPass = new UnrealBloomPass(new THREE.Vector2(cameraWidth, cameraHeight), 1.0, 0.68, 0.0);
+      waveBloomPass = new UnrealBloomPass(
+        new THREE.Vector2(cameraWidth, cameraHeight),
+        1.0,
+        0.68,
+        0.0,
+      );
       waveBloomPass.resolution.set(cameraWidth * 0.5, cameraHeight * 0.5);
       waveComposer.addPass(waveBloomPass);
 
@@ -691,7 +756,9 @@ export function HeroWave({
       waveRenderer.setSize(pendingW, pendingH);
       waveComposer.setSize(pendingW, pendingH);
       waveBloomPass.setSize(pendingW, pendingH);
-      (grainPass.uniforms as Record<string, { value: number }>).grainScale.value = 0.5;
+      (
+        grainPass.uniforms as Record<string, { value: number }>
+      ).grainScale.value = 0.5;
     }
 
     function onResize(newW: number, newH: number) {
@@ -711,17 +778,27 @@ export function HeroWave({
       const span = waveWidth + EXTEND_LEFT_PX;
       const barCount = Math.min(
         MAX_BARS,
-        Math.max(1, Math.floor((span + FIXED_BAR_GAP) / (FIXED_BAR_WIDTH + FIXED_BAR_GAP))),
+        Math.max(
+          1,
+          Math.floor(
+            (span + FIXED_BAR_GAP) / (FIXED_BAR_WIDTH + FIXED_BAR_GAP),
+          ),
+        ),
       );
-      const gap = barCount > 1 ? (span - barCount * FIXED_BAR_WIDTH) / (barCount - 1) : 0;
+      const gap =
+        barCount > 1 ? (span - barCount * FIXED_BAR_WIDTH) / (barCount - 1) : 0;
 
       if (barCount !== currentBarCount) {
         currentBarCount = barCount;
         createInstancedBars();
       } else if (instancedBars) {
         const startX = -waveWidth / 2 - EXTEND_LEFT_PX;
-        const aX = instancedBars.geometry.getAttribute("aXPos") as THREE.InstancedBufferAttribute;
-        const aT = instancedBars.geometry.getAttribute("aPosNorm") as THREE.InstancedBufferAttribute;
+        const aX = instancedBars.geometry.getAttribute(
+          "aXPos",
+        ) as THREE.InstancedBufferAttribute;
+        const aT = instancedBars.geometry.getAttribute(
+          "aPosNorm",
+        ) as THREE.InstancedBufferAttribute;
 
         for (let i = 0; i < barCount; i++) {
           const x = startX + FIXED_BAR_WIDTH / 2 + i * (FIXED_BAR_WIDTH + gap);
@@ -735,7 +812,8 @@ export function HeroWave({
         aT.needsUpdate = true;
       }
 
-      (barMaterial.uniforms as Record<string, { value: number }>).uHalfW.value = cameraWidth * 0.5;
+      (barMaterial.uniforms as Record<string, { value: number }>).uHalfW.value =
+        cameraWidth * 0.5;
       updateGainMultiplier();
       updateGlowDistance();
 
@@ -777,8 +855,10 @@ export function HeroWave({
       if (!waveCameraInitialized || !instancedBars) return;
       const dt = gsap.ticker.deltaRatio() * (1 / 60);
 
-      wave1.currentAngle = (wave1.currentAngle + wave1.frequency * dt) % (Math.PI * 2);
-      wave2.currentAngle = (wave2.currentAngle + wave2.frequency * dt) % (Math.PI * 2);
+      wave1.currentAngle =
+        (wave1.currentAngle + wave1.frequency * dt) % (Math.PI * 2);
+      wave2.currentAngle =
+        (wave2.currentAngle + wave2.frequency * dt) % (Math.PI * 2);
       setPhase1(wave1.currentAngle);
       setPhase2(wave2.currentAngle);
 
@@ -794,7 +874,8 @@ export function HeroWave({
       smoothSpeed += (rawSpeed - smoothSpeed) * kSpeed;
       setSmoothSpeed(smoothSpeed);
 
-      const u = (instancedBars.material as THREE.ShaderMaterial).uniforms as Record<string, { value: number }>;
+      const u = (instancedBars.material as THREE.ShaderMaterial)
+        .uniforms as Record<string, { value: number }>;
       u.w1Gain.value = wave1.gain;
       u.w1Len.value = wave1.waveLength;
       u.w2Gain.value = wave2.gain;
@@ -806,7 +887,8 @@ export function HeroWave({
       if (window.innerWidth < 768) baseOffset = 20;
       u.uBaseY.value = -cameraHeight * 0.5 + baseOffset;
 
-      (grainPass.uniforms as Record<string, { value: number }>).time.value += dt * 0.2;
+      (grainPass.uniforms as Record<string, { value: number }>).time.value +=
+        dt * 0.2;
 
       accumulateGlow(dt);
       waveComposer.render();
@@ -830,7 +912,9 @@ export function HeroWave({
       else gsap.globalTimeline.resume();
     };
     document.addEventListener("visibilitychange", onVisibility);
-    listeners.push(() => document.removeEventListener("visibilitychange", onVisibility));
+    listeners.push(() =>
+      document.removeEventListener("visibilitychange", onVisibility),
+    );
 
     return () => {
       listeners.forEach((fn) => fn());
@@ -854,7 +938,12 @@ export function HeroWave({
     <section
       ref={containerRef}
       className={className}
-      style={{ position: "relative", width: "100%", minHeight: "100vh", ...style }}
+      style={{
+        position: "relative",
+        width: "100%",
+        minHeight: "100vh",
+        ...style,
+      }}
       aria-label="Hero Goat"
     >
       <div
@@ -869,7 +958,10 @@ export function HeroWave({
           padding: "24px",
         }}
       >
-        <div className="max-w-[1120px] w-full text-center" style={{ pointerEvents: "auto" }}>
+        <div
+          className="max-w-[1120px] w-full text-center -translate-y-12 sm:-translate-y-24 transition-transform duration-500 ease-out"
+          style={{ pointerEvents: "auto" }}
+        >
           <h1
             className={`text-3xl sm:text-5xl font-semibold tracking-tight ${
               isDark
@@ -889,28 +981,107 @@ export function HeroWave({
             {subtitle}
           </p>
 
-          <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2 justify-center max-w-[980px] mx-auto">
-            {suggestionsRef.current.slice(0, 4).map((sug) => (
-              <button
-                key={sug}
-                onClick={() => handleSend(`${basePlaceholder}${sug}`)}
-                disabled={isTyping}
-                className="rounded-full px-3 py-1.5 text-[12px] transition-all bg-white/96 border border-[#012AFE]/18 text-[#012AFE] hover:bg-white disabled:opacity-50 truncate"
-                style={{ fontFamily: "var(--font-body)" }}
-                title={`${basePlaceholder}${sug}`}
-              >
-                {`${basePlaceholder}${sug}`}
-              </button>
-            ))}
-          </div>
+          {!hasStartedConversation && (
+            <div className="mt-5 flex flex-col items-center gap-2.5 max-w-[980px] mx-auto px-2">
+              {[
+                [0, 1],
+                [1, 3],
+                [3, 7],
+              ].map(([start, end], rowIndex) => (
+                <div key={rowIndex} className="flex justify-center flex-wrap gap-3 w-full">
+                  {suggestions.slice(start, end).map((sug, i) => {
+                    const globalIndex = start + i;
+                    const isPopular = globalIndex === 0;
+
+                    return (
+                      <div key={sug} className="relative max-w-full">
+                        <button
+                          onClick={() => handleSend(`${basePlaceholder}${sug}`)}
+                          disabled={isTyping}
+                          className="group flex items-center justify-center rounded-full px-4 py-1.5 text-[12px] sm:text-[13px] font-medium transition-all duration-300 ease-out bg-white/96 border border-[#012AFE]/18 text-[#012AFE] hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(1,42,254,0.18)] hover:bg-[#012AFE] hover:text-white disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:hover:bg-white/96 disabled:hover:text-[#012AFE] w-full"
+                          style={{ fontFamily: "var(--font-body)" }}
+                          title={`${basePlaceholder}${sug}`}
+                        >
+                          <span className="truncate transition-transform duration-300">{`${basePlaceholder}${sug}`}</span>
+                          <div className="flex items-center w-0 opacity-0 -translate-x-2 transition-all duration-300 group-hover:w-3.5 group-hover:ml-1.5 group-hover:opacity-100 group-hover:translate-x-0 overflow-hidden">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="w-3.5 h-3.5 shrink-0"
+                            >
+                              <path d="M7 17L17 7" />
+                              <path d="M7 7h10v10" />
+                            </svg>
+                          </div>
+                        </button>
+                        
+                        {isPopular && (
+                          <div
+                            className="absolute -top-2 -right-2 w-[22px] h-[22px] flex items-center justify-center bg-white rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.15)] border border-[#012AFE]/10 animate-pulse pointer-events-none z-10"
+                            title="Mais escolhida"
+                          >
+                            <span className="text-[11px] leading-none mb-px ml-px">🔥</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          )}
 
           <form
-            className="mt-6 sm:mt-8 flex items-center justify-center"
+            className="mt-6 sm:mt-8 flex flex-col items-center justify-center"
             onSubmit={(e) => {
               e.preventDefault();
               handleSend();
             }}
           >
+            {hasStartedConversation && (
+              <div
+                className={`flex justify-end w-full mb-3 pr-2 sm:pr-0 ${
+                  hasStartedConversation ? "sm:w-[980px]" : "sm:w-[720px]"
+                }`}
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    clearSession();
+                    initialized.current = false;
+                  }}
+                  className={`flex items-center gap-1.5 text-[12px] sm:text-[13px] font-semibold px-4 py-1.5 rounded-full transition-all shadow-sm group ${
+                    isDark
+                      ? "text-white bg-white/10 hover:bg-white/20 border border-white/20"
+                      : "text-[#012AFE] bg-white/70 hover:bg-white border border-[#012AFE]/20 hover:border-[#012AFE]/40"
+                  }`}
+                  title="Iniciar nova conversa"
+                >
+                  <svg
+                    xmlns="http://www.w0.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="transition-transform group-hover:rotate-180 duration-500"
+                  >
+                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                    <path d="M16 21v-5h5" />
+                  </svg>
+                  Novo chat
+                </button>
+              </div>
+            )}
             <motion.div
               layout
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
@@ -1020,7 +1191,12 @@ export function HeroWave({
                       <div className="flex gap-3 items-start">
                         <div className="w-8 h-8 rounded-full bg-[#012AFE] flex items-center justify-center shrink-0">
                           <div className="relative w-4 h-4">
-                            <Image src="/azul-simbolo.svg" alt="" fill className="object-contain brightness-0 invert" />
+                            <Image
+                              src="/azul-simbolo.svg"
+                              alt=""
+                              fill
+                              className="object-contain brightness-0 invert"
+                            />
                           </div>
                         </div>
                         <div className="bg-(--bg2) border border-border rounded-[14px] rounded-bl-[4px] px-4 py-3">
