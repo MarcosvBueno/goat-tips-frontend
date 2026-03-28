@@ -438,7 +438,7 @@ function PreMatchForm({
                 <p className="w-56 text-center text-xs text-slate-200">
                   O árbitro escolhido pode influenciar em até{" "}
                   <strong className="text-white">12%</strong> na precisão final
-                  do xG e nas métricas disciplinares (Pênaltis e Cartões).
+                  da Expectativa de Gols e nas métricas disciplinares (Pênaltis e Cartões).
                 </p>
               </TooltipContent>
             </Tooltip>
@@ -1383,7 +1383,7 @@ export function PreMatchResultsDashboard({
           className="bg-card p-6 rounded-2xl border border-border shadow-sm flex flex-col items-center text-center"
         >
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-3">
-            XG CASA
+            EXP. GOLS CASA
           </span>
           <div className="text-4xl font-headline font-black text-primary mb-1">
             {prediction.lambda_home.toFixed(2)}
@@ -1397,7 +1397,7 @@ export function PreMatchResultsDashboard({
           className="bg-card p-6 rounded-2xl border border-border shadow-sm flex flex-col items-center text-center"
         >
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-3">
-            XG FORA
+            EXP. GOLS FORA
           </span>
           <div className="text-4xl font-headline font-black text-red-500 mb-1">
             {prediction.lambda_away.toFixed(2)}
