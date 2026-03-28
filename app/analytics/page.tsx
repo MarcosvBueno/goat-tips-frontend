@@ -242,16 +242,30 @@ export default function AnalyticsPage() {
       </section>
 
       <section className="relative mb-7 rounded-2xl border border-border bg-card/85 p-4 sm:p-5 shadow-[0_10px_30px_rgba(0,0,0,0.05)]">
-        <div className="flex flex-col gap-2 mb-4">
-          <h2
-            className="text-[16px] uppercase tracking-[0.05em] text-(--text)"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            Filtros de analise
-          </h2>
-          <p className="text-[12px] text-(--text2)">
-            Selecione equipes e arbitro para personalizar os cards.
-          </p>
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex flex-col gap-2">
+            <h2
+              className="text-[16px] uppercase tracking-[0.05em] text-(--text)"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              Filtros de analise
+            </h2>
+            <p className="text-[12px] text-(--text2)">
+              Selecione equipes e arbitro para personalizar os cards.
+            </p>
+          </div>
+          {(selectedTeam || selectedTeam2 || selectedReferee) && (
+            <button
+              onClick={() => {
+                setSelectedTeam(undefined);
+                setSelectedTeam2(undefined);
+                setSelectedReferee(undefined);
+              }}
+              className="px-4 py-2 bg-[#FF3B3B]/10 text-[#FF3B3B] hover:bg-[#FF3B3B]/20 rounded-xl text-[12px] font-semibold transition-all border border-[#FF3B3B]/20 whitespace-nowrap cursor-pointer"
+            >
+              Limpar Seleções
+            </button>
+          )}
         </div>
 
         <div className="flex flex-wrap gap-3">
@@ -260,14 +274,14 @@ export default function AnalyticsPage() {
             value={selectedTeam}
             onChange={setSelectedTeam}
             placeholder="Selecione um time"
-            options={teams}
+            options={teams.filter((t) => t !== selectedTeam2)}
           />
           <SelectField
             label="Time visitante (H2H)"
             value={selectedTeam2}
             onChange={setSelectedTeam2}
             placeholder="Selecione outro time"
-            options={teams}
+            options={teams.filter((t) => t !== selectedTeam)}
           />
           <SelectField
             label="Arbitro"
@@ -279,36 +293,47 @@ export default function AnalyticsPage() {
         </div>
       </section>
 
-      <div className="flex flex-wrap items-center gap-2.5 mb-5">
-        {selectedTeam && (
-          <TeamSelectionPill
-            name={selectedTeam}
-            role="Casa"
-            logo={teamLogos.get(selectedTeam)}
-            color="#012AFE"
-          />
-        )}
-        {selectedTeam2 && (
-          <TeamSelectionPill
-            name={selectedTeam2}
-            role="Fora"
-            logo={teamLogos.get(selectedTeam2)}
-            color="#FF3B3B"
-          />
-        )}
-        {selectedReferee && (
-          <span
-            className="inline-flex items-center h-10 px-3 rounded-full text-[11px] font-semibold border"
-            style={{
-              borderColor: "#FFB80035",
-              color: "#B57B00",
-              backgroundColor: "#FFB80015",
-            }}
-          >
-            Arbitro: {selectedReferee}
-          </span>
-        )}
-      </div>
+      {(selectedTeam || selectedTeam2 || selectedReferee) && (
+        <div className="flex flex-wrap items-center gap-2.5 mb-5">
+          {selectedTeam && (
+            <TeamSelectionPill
+              name={selectedTeam}
+              role="Casa"
+              logo={teamLogos.get(selectedTeam)}
+              color="#012AFE"
+            />
+          )}
+          {selectedTeam2 && (
+            <TeamSelectionPill
+              name={selectedTeam2}
+              role="Fora"
+              logo={teamLogos.get(selectedTeam2)}
+              color="#FF3B3B"
+            />
+          )}
+          {selectedReferee && (
+            <span
+              className="inline-flex items-center h-10 px-3 rounded-full text-[11px] font-semibold border"
+              style={{
+                borderColor: "#FFB80035",
+                color: "#B57B00",
+                backgroundColor: "#FFB80015",
+              }}
+            >
+              Arbitro: {selectedReferee}
+            </span>
+          )}
+        </div>
+      )}
+
+      {(!selectedTeam && !selectedTeam2 && !selectedReferee) && (
+        <h3
+          className="text-[16px] uppercase tracking-[0.05em] text-(--text) font-semibold mb-4 px-1"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
+          Métrica Geral
+        </h3>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
         {selectedTeam &&
