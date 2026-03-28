@@ -1,6 +1,33 @@
 # Goat Tips - Frontend
 
+<p align="center" style="display: flex; justify-content: center; align-items: center; gap: 40px;">
+  <img src="./public/azul-logo-horizontal.svg" alt="Goat Tips" height="80" />
+  <img src="./public/premier-complete-logo.png" alt="Premier League" height="100" />
+</p>
+
+<img width="1470" height="835" alt="Captura de Tela 2026-03-27 às 23 05 22" src="https://github.com/user-attachments/assets/15842126-c9fc-4f20-bc2c-2d212526f147" />
+
+<p align="center">
+  <strong>Predicoes orientadas por dados + leitura contextual com IA em tempo real.</strong><br/>
+  Plataforma de analise para pre-jogo e ao vivo com foco em decisao objetiva.
+</p>
+
+---
+
 Interface web do Goat Tips, plataforma de analise esportiva com previsoes pre-jogo/ao vivo, analytics e assistente Tipster IA.
+
+## Identidade do Produto
+
+Goat Tips nasce com uma proposta clara: transformar sinais complexos de jogo em decisao acionavel.
+A experiencia combina:
+
+- Modelo estatistico para previsibilidade de mercado.
+- Camada narrativa para explicar risco, tendencia e contexto.
+- Interface orientada a leitura rapida, sem perder profundidade analitica.
+
+<p align="center">
+  <em>Menos achismo. Mais contexto. Melhor decisao.</em>
+</p>
 
 ## Visao Geral
 
